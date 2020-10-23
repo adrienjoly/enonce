@@ -4,6 +4,10 @@ Application Web de rendu d'énoncé avec variantes, pour évaluer les étudiant�
 
 _Énoncé_ est une alternative partielle à [`js-test`](https://github.com/adrienjoly/js-test). Elle a vocation d'être plus minimale et agnostique, au niveau technique mais aussi vis à vis de l'interface avec les étudiant•e•s. En effet, elle ne gère pas le rendu des étudiant•e•s. _Énoncé_ se contente de générer un énoncé partiellement individualisé pour chaque identifiant d'étudiant•e.
 
+## Demo
+
+- [adrienjoly.com/enonce/?id=1](https://adrienjoly.com/enonce/?id=1)
+
 ## Exemple d'usage pour l'enseignant
 
 1. Écrire l'énoncé du devoir au format Markdown, dans le fichier `enonce.js`.

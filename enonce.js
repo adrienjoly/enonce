@@ -7,7 +7,7 @@ Rendre votre définition du mot ${variant(["exercice", "évaluation", "examen"])
 
 ## Exercice 2
 
-Consulter l'énoncé d'un autre étudiant, exemple: [/${studentId + 1}](/${studentId + 1}).
+Consulter l'énoncé d'un autre étudiant, exemple: [id=${studentId + 1}](./?id=${studentId + 1}).
 `;
 
 const variantPicker = (studentId) => (variants) => variants[studentId % variants.length]
