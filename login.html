@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="google-signin-client_id" content="878632360760-icv8nam6d8eekmr1ouar7kv1r31fbuab.apps.googleusercontent.com">
+    <link rel="icon" type="image/png" href="icon.png">
+    <title>Énoncé</title>
+  </head>
+  <body>
+    <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
+    <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
+
+    <p id="app"></p>
+
+    <script>
+      function setContent(html) {
+        document.getElementById("app").innerHTML = html;
+      }
+
+      function onGoogleUserChange(googleUser) {
+        if (googleUser) {
+          const profile = googleUser.getBasicProfile();
+          // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+          // console.log('Name: ' + profile.getName());
+          // console.log('Image URL: ' + profile.getImageUrl());
+          // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+          setTimeout(() => window.location.href = `./?id=${profile.getId()}`);
+          setContent(`<p>Redirection vers l'énoncé...</p><a href="#" onclick="signOut();">Déconnexion</a>`);
+        } else {
+          setContent("Connectez-vous avec votre compte d'étudiant•e.");
+        }
+      }
+
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(() => onGoogleUserChange(null));
+      }
+    </script>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  </body>
+</html>
