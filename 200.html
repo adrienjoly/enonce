@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="google-signin-client_id" content="878632360760-icv8nam6d8eekmr1ouar7kv1r31fbuab.apps.googleusercontent.com">
+    <link rel="icon" type="image/png" href="icon.png">
+    <title>Énoncé</title>
+  </head>
+  <body>
+
+    <p id="app"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
+    <script src="./enonce.js"></script>
+
+    <script>
+      const param = window.location.pathname.substr(1); // remove the slash prefix
+      const studentId = parseInt(param);
+      let content = "Rendez-vous à l'URL individuelle fournie par votre enseignant•e.";
+      if (studentId > 0) {
+        content = window.marked(window.énoncé(studentId));
+      }
+      document.getElementById("app").innerHTML = content;
+    </script>
+
+  </body>
+</html>
