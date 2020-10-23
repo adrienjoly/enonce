@@ -10,16 +10,32 @@
     <p id="app"></p>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
-    <script src="./enonce.js"></script>
 
     <script>
+      function setContent(html) {
+        document.getElementById("app").innerHTML = html;
+      }
+
+      function loadResource(url, callback) {
+        const request = new XMLHttpRequest();
+        request.open("GET", url);
+        request.onload = () => callback(request);
+        request.send();
+      }
+
       const param = window.location.search.replace("?id=", "");
       const studentId = parseInt(param);
-      let content = "Rendez-vous à l'URL individuelle fournie par votre enseignant•e.";
+
       if (studentId > 0) {
-        content = window.marked(window.énoncé(studentId));
+        setContent("Chargement de l'énoncé en cours...");
+        loadResource("./enonce.md", (request) => {
+          const render = eval(`(variant, studentId) => \`${request.response}\``);
+          const variantPicker = (studentId) => (variants) => variants[studentId % variants.length]
+          setContent(window.marked(render(variantPicker(studentId), studentId)));
+        });
+      } else {
+        setContent("Rendez-vous à l'URL individuelle fournie par votre enseignant•e.");
       }
-      document.getElementById("app").innerHTML = content;
     </script>
 
   </body>

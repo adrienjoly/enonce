@@ -10,7 +10,7 @@ _Énoncé_ est une alternative partielle à [`js-test`](https://github.com/adrie
 
 ## Exemple d'usage pour l'enseignant
 
-1. Écrire l'énoncé du devoir au format Markdown, dans le fichier `enonce.js`.
+1. Écrire l'énoncé du devoir au format Markdown, dans le fichier `enonce.md`.
 
 2. [Optionnel] Ajouter des variantes dans l'énoncé, en fonction du nombre passé en paramètre.
 
