@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="google-signin-client_id" content="878632360760-icv8nam6d8eekmr1ouar7kv1r31fbuab.apps.googleusercontent.com">
+    <link rel="icon" type="image/png" href="icon.png">
+    <title>Énoncé</title>
+  </head>
+  <body>
+    <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
+    <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
+
+    <p id="app"></p>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
+    <script src="./enonce.js"></script>
+
+    <script>
+      function onGoogleUserChange(googleUser) {
+        let content = '';
+        if (googleUser) {
+          const profile = googleUser.getBasicProfile();
+          console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+          console.log('Name: ' + profile.getName());
+          console.log('Image URL: ' + profile.getImageUrl());
+          console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+          content =
+            window.marked(window.énoncé(profile.getName()))
+            + `<a href="#" onclick="signOut();">Sign out</a>`;
+        }
+        document.getElementById("app").innerHTML = content;
+      }
+
+      function signOut() {
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(function () {
+          console.log('User signed out.');
+          onGoogleUserChange(null);
+        });
+      }
+    </script>
+
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+  </body>
+</html>
