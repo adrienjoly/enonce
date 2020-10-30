@@ -23,14 +23,25 @@
         request.send();
       }
 
-      const param = window.location.search.replace("?id=", "");
-      const studentId = parseInt(param);
+      // modulo that also works for big integers stored as string
+      // cf https://stackoverflow.com/a/16019504/592254
+      function modulo (divident, divisor) {
+          const partLength = 10;
+          while (divident.length > partLength) {
+              const part = divident.substring(0, partLength);
+              divident = (part % divisor) +  divident.substring(partLength);          
+          }
+          return divident % divisor;
+      }
 
-      if (studentId > 0) {
+      const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
+
+      const studentId = window.location.search.replace("?id=", "");
+
+      if (parseInt(studentId) > 0) {
         setContent("Chargement de l'énoncé en cours...");
         loadResource("./enonce.md", (request) => {
           const render = eval(`(variant, studentId) => \`${request.response}\``);
-          const variantPicker = (studentId) => (variants) => variants[studentId % variants.length]
           setContent(window.marked(render(variantPicker(studentId), studentId)));
         });
       } else {
