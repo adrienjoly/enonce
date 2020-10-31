@@ -3,13 +3,15 @@
   <head>
     <meta charset="utf-8"/>
     <link rel="icon" type="image/png" href="icon.png">
+    <link rel="stylesheet" href="assets/style.css">
     <title>Énoncé</title>
   </head>
   <body>
 
-    <p id="app"></p>
+    <div id="app" class="container-lg px-3 my-5 markdown-body"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
+    <script src="index.js"></script>
 
     <script>
       function setContent(html) {
@@ -23,17 +25,6 @@
         request.send();
       }
 
-      // modulo that also works for big integers stored as string
-      // cf https://stackoverflow.com/a/16019504/592254
-      function modulo (divident, divisor) {
-          const partLength = 10;
-          while (divident.length > partLength) {
-              const part = divident.substring(0, partLength);
-              divident = (part % divisor) +  divident.substring(partLength);          
-          }
-          return divident % divisor;
-      }
-
       const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
 
       const studentId = window.location.search.replace("?id=", "");
@@ -45,7 +36,7 @@
           setContent(window.marked(render(variantPicker(studentId), studentId)));
         });
       } else {
-        setContent("Rendez-vous à l'URL individuelle fournie par votre enseignant•e.");
+        setContent("Rendez-vous à l'URL individuelle fournie par votre enseignant·e.");
       }
     </script>
 
