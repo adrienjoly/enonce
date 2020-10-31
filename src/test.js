@@ -1,6 +1,6 @@
 const test = require('ava');
 
-const { fillTemplateForStudent, variantPicker, hashCode, normalizeEmail } = require('./index.js');
+const { fillTemplateForStudent, variantPicker, hashCode, normalizeEmail, countVariantsFromTemplate } = require('./index.js');
 
 
 test('fillTemplateForStudent', t => {
@@ -33,4 +33,8 @@ test('normalizeEmail normalizes the email address', t => {
   t.is(normalizeEmail(" address@email.com"), normalized);
   t.is(normalizeEmail("address@email.com "), normalized);
   t.is(normalizeEmail("address@Email.com "), normalized);
+});
+
+test('countVariantsFromTemplate computes the number of combinations of variants', t => {
+  t.is(countVariantsFromTemplate('- ${variant(["hello","hi","hey"])}${variant([";",","])} ${variant(["world","all"])} -'), 6);
 });

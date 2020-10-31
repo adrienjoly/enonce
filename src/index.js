@@ -33,6 +33,42 @@ function fillTemplateForStudent (template, studentId) {
   return render(variantPicker(studentId), studentId);
 }
 
+/**
+ * Count the number of combinations of variants from a template.
+ * cf https://stackoverflow.com/a/34955386/592254
+ */
+function countVariantsFromTemplate (template) {
+  // Greatest common divisor of 2 integers
+  function gcd2(a, b) {
+    if(!b) return b===0 ? a : NaN;
+    return gcd2(b, a%b);
+  }
+  // Greatest common divisor of a list of integers
+  function gcd(array) {
+    var n = 0;
+    for(var i=0; i<array.length; ++i)
+      n = gcd2(array[i], n);
+    return n;
+  }
+  // Least common multiple of 2 integers
+  function lcm2(a, b) {
+    return a*b / gcd2(a, b);
+  }
+  // Least common multiple of a list of integers
+  function lcm(array) {
+    var n = 1;
+    for(var i=0; i<array.length; ++i)
+      n = lcm2(array[i], n);
+    return n;
+  }
+  // now, let's compute
+  const variantsPerPlaceholder =
+    [...template.matchAll(/\$\{variant\(([^\)]*)\)\}/g)]
+      .map(match => match[1])
+      .map(variantsStr => JSON.parse(variantsStr))
+      .map(variants => variants.length);
+  return lcm(variantsPerPlaceholder);
+}
 
 try {
   // make the functions also loadable from Node.js
@@ -41,5 +77,6 @@ try {
     normalizeEmail,
     variantPicker,
     fillTemplateForStudent,
+    countVariantsFromTemplate,
   };
 } catch (err) {}
