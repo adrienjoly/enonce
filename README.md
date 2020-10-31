@@ -33,3 +33,15 @@ L'usage de Google Classroom permet de simplifier l'étape 4: la génération et 
 - [Optionnel] Utiliser [gclass](https://www.npmjs.com/package/gclass) ou [classroom-submissions-to-pdf](https://github.com/adrienjoly/classroom-submissions-to-pdf) pour télécharger les rendus.
 
 - [Idée] Rendre un document Google Docs à chaque étudiant·e incluant son énoncé et son rendu, pour faciliter les annotations et échanges sur la copie.
+
+## CLI
+
+```sh
+$ git clone https://github.com/adrienjoly/enonce.git
+$ cd enonce
+$ npm install
+$ npm test
+$ npm run check combinations   # from data/enonce.md => 3
+$ npm start                    # to test the UI locally
+$ npm run deploy               # to deploy using surge.io
+```

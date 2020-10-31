@@ -2,7 +2,6 @@ const test = require('ava');
 
 const { fillTemplateForStudent, variantPicker, hashCode, normalizeEmail, countVariantsFromTemplate } = require('./index.js');
 
-
 test('fillTemplateForStudent', t => {
   t.is(fillTemplateForStudent('abc', 123), 'abc'); // no variant
   t.is(fillTemplateForStudent('abc_${variant(["dummy"])}', 123), 'abc_dummy'); // dummy variant
