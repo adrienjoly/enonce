@@ -6,7 +6,7 @@ _Énoncé_ est une alternative partielle à [`js-test`](https://github.com/adrie
 
 ## Demo
 
-- [adrienjoly.com/enonce/?id=1](https://adrienjoly.com/enonce/?id=1)
+- [adrienjoly.com/enonce/?studentId=1](https://adrienjoly.com/enonce/?studentId=1)
 
 ## Exemple d'usage pour l'enseignant
 

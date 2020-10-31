@@ -27,7 +27,7 @@
 
       const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
 
-      const studentId = window.location.search.replace("?id=", "");
+      const studentId = window.location.search.replace("?studentId=", "");
 
       if (parseInt(studentId) > 0) {
         setContent("Chargement de l'énoncé en cours...");

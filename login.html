@@ -24,7 +24,7 @@
           // console.log('Name: ' + profile.getName());
           // console.log('Image URL: ' + profile.getImageUrl());
           // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-          setTimeout(() => window.location.href = `./?id=${profile.getId()}`);
+          setTimeout(() => window.location.href = `./?studentId=${profile.getId()}`);
           setContent(`<p>Redirection vers l'énoncé...</p><a href="#" onclick="signOut();">Déconnexion</a>`);
         } else {
           setContent("Connectez-vous avec votre compte d'étudiant·e.");
