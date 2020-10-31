@@ -85,6 +85,28 @@ function loadResource(url, callback) {
   request.send();
 }
 
+/**
+ * Load and initialize Google Signin.
+ */
+function initGoogleAuth(callback) {
+  loadResource("data/auth.json?t=" + Date.now(), (request) => {
+    const authConfig = JSON.parse(request.response);
+    console.log('Loaded auth config:', authConfig);
+
+    window.onGoogleLoaded = () =>
+      gapi.load("auth2", () =>
+        gapi.auth2.init({ client_id: authConfig.google_signin_client_id }).then(callback)
+      );
+
+    // Let's load Google API --> onGoogleLoaded()
+    const authScript = document.createElement("script");
+    authScript.src = "https://apis.google.com/js/platform.js?onload=onGoogleLoaded";
+    authScript.async = true;
+    authScript.defer = true;
+    document.body.appendChild(authScript);
+  });
+}
+
 try {
   // make the functions also loadable from Node.js
   module.exports = {

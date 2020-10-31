@@ -9,7 +9,7 @@
     <title>Énoncé</title>
   </head>
   <body>
-    
+
     <div id="app" class="container-lg px-3 my-5 markdown-body">
       Déconnexion...
     </div>
@@ -17,33 +17,12 @@
     <script src="src/index.js"></script>
 
     <script>
-      function setContent(html) {
-        document.getElementById("app").innerHTML = html;
-      }
-
-      let authConfig;      
-      function onGoogleLoaded() {
-        gapi.load("auth2", function() {
-          gapi.auth2.init({ client_id: authConfig.google_signin_client_id }).then(() => {
-            const auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(() => {
-              setTimeout(() => window.location.href = `.`);
-              setContent(`<p>Redirection vers la page d'accueil...</p>`);
-            });
-          });
+      initGoogleAuth(() => {
+        const auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut().then(() => {
+          document.getElementById("app").innerHTML = `<p>Redirection vers la page d'accueil...</p>`;
+          setTimeout(() => window.location.href = `.`);
         });
-      }
-
-      loadResource("data/auth.json?t=" + Date.now(), (request) => {
-        authConfig = JSON.parse(request.response); // will be used by onGoogleLoaded()
-        console.log('Loaded auth config:', authConfig);
-
-        // Let's load Google API --> onGoogleLoaded()
-        const authScript = document.createElement("script");
-        authScript.src = "https://apis.google.com/js/platform.js?onload=onGoogleLoaded";
-        authScript.async = true;
-        authScript.defer = true;
-        document.body.appendChild(authScript);
       });
     </script>
 

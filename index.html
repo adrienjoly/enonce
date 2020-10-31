@@ -11,7 +11,8 @@
   <body>
 
     <div id="app" class="container-lg px-3 my-5 markdown-body">
-      Chargement de l'énoncé...      
+      <p>Connectez-vous avec votre compte d'étudiant·e.</p>
+      <div id="login"></div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
@@ -31,46 +32,19 @@
             setContent(window.marked(filledMarkdown));
           });
         } else if (!window.onGoogleLoaded) {
-          // source: https://developers.google.com/identity/sign-in/web/sign-in
-          window.onGoogleUserChange = (googleUser) => {
-            if (googleUser) {
-              const profile = googleUser.getBasicProfile();
-              const email = profile.getEmail();
-              const studentId = hashCode(normalizeEmail(email));
-              console.warn('Rendering from Google login:', { googleUser, email, studentId });
-              renderPage(studentId);
-              // TODO: add link to logout page
-            }
-          };
-
-          let authConfig;
-          window.onGoogleLoaded = () => {
-            setContent(`
-              <p>Connectez-vous avec votre compte d'étudiant·e.</p>
-              <div id="login" class="g-signin2"></div>
-            `);
-            gapi.load("auth2", () => {
-              gapi.auth2.init({ client_id: authConfig.google_signin_client_id }).then(() => {
-                gapi.signin2.render("login", {
-                  scope: "email",
-                  onsuccess: window.onGoogleUserChange,
-                });
-              });
+          initGoogleAuth(() => {
+            gapi.signin2.render("login", {
+              scope: "email",
+              onsuccess: (googleUser) => {
+                if (!googleUser) return;
+                const email = googleUser.getBasicProfile().getEmail();
+                const studentId = hashCode(normalizeEmail(email));
+                console.warn('Rendering from Google login:', { googleUser, email, studentId });
+                renderPage(studentId);
+                // TODO: add link to logout page
+              },
             });
-          };
-
-          loadResource("data/auth.json?t=" + Date.now(), (request) => {
-            authConfig = JSON.parse(request.response); // will be used by onGoogleLoaded()
-            console.log('Loaded auth config:', authConfig);
-
-            // Let's load Google API, to render the Login button
-            const authScript = document.createElement("script");
-            authScript.src = "https://apis.google.com/js/platform.js?onload=onGoogleLoaded";
-            authScript.async = true;
-            authScript.defer = true;
-            document.body.appendChild(authScript);
           });
-
         } else {
           setContent("Un problème est survenu. Veuillez demander de l'aide à votre enseignant.");
         }
