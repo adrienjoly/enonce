@@ -8,10 +8,14 @@
     <title>Énoncé</title>
   </head>
   <body>
-    <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
-    <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
 
-    <div id="app" class="container-lg px-3 my-5 markdown-body"></div>
+    <div id="app" class="container-lg px-3 my-5 markdown-body">
+      Connectez-vous avec votre compte d'étudiant·e.
+      <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
+      <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
+    </div>
+
+    <script src="src/index.js"></script>
 
     <script>
       function setContent(html) {
@@ -21,19 +25,10 @@
       function onGoogleUserChange(googleUser) {
         if (googleUser) {
           const profile = googleUser.getBasicProfile();
-          // console.log('Name: ' + profile.getName());
-          // console.log('Image URL: ' + profile.getImageUrl());
-          // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-          setTimeout(() => window.location.href = `./?id=${profile.getId()}`);
-          setContent(`<p>Redirection vers l'énoncé...</p><a href="#" onclick="signOut();">Déconnexion</a>`);
-        } else {
-          setContent("Connectez-vous avec votre compte d'étudiant·e.");
+          const studentId = hashCode(normalizeEmail(profile.getEmail()));
+          setTimeout(() => window.location.href = `./?studentId=${studentId}`);
+          setContent(`<p>Redirection vers l'énoncé...</p><a href="logout">Déconnexion</a>`);
         }
-      }
-
-      function signOut() {
-        var auth2 = gapi.auth2.getAuthInstance();
-        auth2.signOut().then(() => onGoogleUserChange(null));
       }
     </script>
 

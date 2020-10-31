@@ -6,15 +6,15 @@ _Énoncé_ est une alternative partielle à [`js-test`](https://github.com/adrie
 
 ## Demo
 
-- [adrienjoly.com/enonce/?id=1](https://adrienjoly.com/enonce/?id=1)
+- [adrienjoly.com/enonce/?studentId=1](https://adrienjoly.com/enonce/?studentId=1)
 
 ## Exemple d'usage pour l'enseignant
 
-1. Écrire l'énoncé du devoir au format Markdown, dans le fichier `enonce.md`.
+1. Écrire l'énoncé du devoir au format Markdown, dans le fichier `data/enonce.md`.
 
 2. [Optionnel] Ajouter des variantes dans l'énoncé, en fonction du nombre passé en paramètre.
 
-3. Publier l'énoncé sur `surge.sh` à l'aide du script `publish.sh`.
+3. Publier l'énoncé sur `surge.sh` à l'aide du script `npm run deploy`.
 
 4. Attribuer à chaque étudiant·e un numéro unique aléatoire, puis leur transmettre l'URL de l'énoncé incluant ce numéro en paramètre. Leur demander de rendre leur travail via la plateforme de votre choix. (ex: email ou autre)
 
@@ -30,6 +30,26 @@ L'usage de Google Classroom permet de simplifier l'étape 4: la génération et 
 
 - Inviter les étudiant·e·s à s'identifier sur la page d'énoncé avec leur compte Google Classroom – en cliquant sur le bouton – puis à rendre leur travail via le devoir Google Classroom.
 
-- [Optionnel] Utiliser [classroom-assignments-cli](https://github.com/adrienjoly/classroom-assignments-cli) ou [classroom-submissions-to-pdf](https://github.com/adrienjoly/classroom-submissions-to-pdf) pour télécharger les rendus.
+- [Optionnel] Utiliser [gclass](https://www.npmjs.com/package/gclass) ou [classroom-submissions-to-pdf](https://github.com/adrienjoly/classroom-submissions-to-pdf) pour télécharger les rendus.
 
 - [Idée] Rendre un document Google Docs à chaque étudiant·e incluant son énoncé et son rendu, pour faciliter les annotations et échanges sur la copie.
+
+## CLI
+
+```sh
+$ git clone https://github.com/adrienjoly/enonce.git
+$ cd enonce
+$ npm install
+$ npm test
+$ npm run check combinations   # from data/enonce.md => 3
+$ npm run check render 422     # render statement for student #422
+$ npm start                    # to test the UI locally
+$ npm run deploy               # to deploy using surge.io
+```
+
+Get the distribution of variants among students, from a csv list of students with email address in the first column:
+
+```sh
+$ cat students.csv | cut -d, -f1 | npm run check student-variants
+# => e.g. { studentsPerVariant: [ 4, 7, 8 ] }
+```

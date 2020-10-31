@@ -8,7 +8,9 @@
   </head>
   <body>
 
-    <div id="app" class="container-lg px-3 my-5 markdown-body"></div>
+    <div id="app" class="container-lg px-3 my-5 markdown-body">
+      Chargement de l'énoncé en cours...
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
     <script src="src/index.js"></script>
@@ -25,15 +27,12 @@
         request.send();
       }
 
-      const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
+      const studentId = parseInt(window.location.search.replace("?studentId=", ""), 10);
 
-      const studentId = window.location.search.replace("?id=", "");
-
-      if (parseInt(studentId) > 0) {
-        setContent("Chargement de l'énoncé en cours...");
-        loadResource("./enonce.md", (request) => {
-          const render = eval(`(variant, studentId) => \`${request.response.replace(/`/g, "\\`")}\``);
-          setContent(window.marked(render(variantPicker(studentId), studentId)));
+      if (!isNaN(studentId)) {
+        loadResource("data/enonce.md", (request) => {
+          const markdownTemplate = request.response;
+          setContent(window.marked(fillTemplateForStudent(markdownTemplate, studentId)));
         });
       } else {
         setContent("Rendez-vous à l'URL individuelle fournie par votre enseignant·e.");
