@@ -31,7 +31,7 @@
 
       if (parseInt(studentId) > 0) {
         setContent("Chargement de l'énoncé en cours...");
-        loadResource("./enonce.md", (request) => {
+        loadResource("data/enonce.md", (request) => {
           const render = eval(`(variant, studentId) => \`${request.response.replace(/`/g, "\\`")}\``);
           setContent(window.marked(render(variantPicker(studentId), studentId)));
         });
