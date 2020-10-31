@@ -1,6 +1,6 @@
 const test = require('ava');
 
-const { modulo, hashCode } = require('./src/index.js');
+const { modulo, hashCode } = require('./index.js');
 
 test('modulo supports short student ids', t => {
   t.is(modulo('0', 2), 0);
