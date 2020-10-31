@@ -33,11 +33,17 @@ function normalizeEmail (email) {
   return email.toLowerCase().trim();
 }
 
+/**
+ * Returns a function that will pick a variant, given a studentId and an array of variants.
+ */
+const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
+
 try {
   // make the functions also loadable from Node.js
   module.exports = {
     modulo,
     hashCode,
     normalizeEmail,
+    variantPicker,
   };
 } catch (err) {}

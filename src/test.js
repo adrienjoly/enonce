@@ -1,6 +1,16 @@
 const test = require('ava');
 
-const { modulo, hashCode, normalizeEmail } = require('./index.js');
+const { modulo, hashCode, normalizeEmail, variantPicker } = require('./index.js');
+
+test('variantPicker returns the right variant based on studentId', t => {
+  t.is(variantPicker('1230')(['variant0', 'variant1', 'variant2']), 'variant0');
+  t.is(variantPicker('1231')(['variant0', 'variant1', 'variant2']), 'variant1');
+  t.is(variantPicker('1232')(['variant0', 'variant1', 'variant2']), 'variant2');
+  t.is(variantPicker('1233')(['variant0', 'variant1', 'variant2']), 'variant0');
+  t.is(variantPicker('1234')(['even', 'odd']), 'even');
+  t.is(variantPicker('1235')(['even', 'odd']), 'odd');
+  t.is(variantPicker('1236')(['even', 'odd']), 'even');
+});
 
 test('modulo supports short student ids', t => {
   t.is(modulo('0', 2), 0);
