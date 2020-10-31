@@ -2,17 +2,24 @@
 
 const fs = require("fs");
 const { promisify } = require("util");
-const { countVariantsFromTemplate, fillTemplateForStudent, getStudentVariant, normalizeEmail, hashCode } = require("./index.js");
+const {
+  countVariantsFromTemplate,
+  fillTemplateForStudent,
+  getStudentVariant,
+  normalizeEmail,
+  hashCode,
+} = require("./index.js");
 
 const USAGE = `$ npm run check <command> <parameter>`;
 
-const readStdin = () => new Promise((resolve) => {
-  const chunks = [];
-  process
-    .openStdin()
-    .on("data", (chunk) => chunks.push(chunk))
-    .on("end", () => resolve(chunks.join("")));
-});
+const readStdin = () =>
+  new Promise((resolve) => {
+    const chunks = [];
+    process
+      .openStdin()
+      .on("data", (chunk) => chunks.push(chunk))
+      .on("end", () => resolve(chunks.join("")));
+  });
 
 const loadTemplate = (filePath = "data/enonce.md") => {
   console.warn(`loading template from ${filePath}...`);
@@ -44,7 +51,13 @@ const COMMANDS = {
       studentsPerVariant[variant]++;
       console.log(`- email: ${email} => variant: ${variant}`);
     }
-    console.log({studentsPerVariant});
+    console.log('Number of students per variants:', studentsPerVariant);
+    const maxStudentsWithCommonVariant = Math.max(...studentsPerVariant);
+    console.log(`Highest number of students who share a same variant:`, maxStudentsWithCommonVariant);
+    const mostSharedVariants = studentsPerVariant
+      .map((count, variant) =>  count === maxStudentsWithCommonVariant ? variant : undefined)
+      .filter(Number); // exclude undefined values
+    console.log(`Variant(s) most shared by the students:`, mostSharedVariants);
   },
 };
 
