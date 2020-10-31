@@ -42,6 +42,7 @@ $ cd enonce
 $ npm install
 $ npm test
 $ npm run check combinations   # from data/enonce.md => 3
+$ npm run check render 422     # render statement for student #422
 $ npm start                    # to test the UI locally
 $ npm run deploy               # to deploy using surge.io
 ```

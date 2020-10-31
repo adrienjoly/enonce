@@ -2,7 +2,7 @@
 
 const fs = require("fs");
 const { promisify } = require("util");
-const { countVariantsFromTemplate, getStudentVariant, normalizeEmail, hashCode } = require("./index.js");
+const { countVariantsFromTemplate, fillTemplateForStudent, getStudentVariant, normalizeEmail, hashCode } = require("./index.js");
 
 const USAGE = `$ npm run check <command> <parameter>`;
 
@@ -25,6 +25,11 @@ const COMMANDS = {
     const nbVariants = countVariantsFromTemplate(template);
     console.warn(`=> number of combinations of variants:`);
     console.log(nbVariants);
+  },
+  render: async (studentId) => {
+    const template = await loadTemplate();
+    const rendered = fillTemplateForStudent(template, studentId);
+    console.log(rendered);
   },
   "student-variants": async () => {
     const template = await loadTemplate();
