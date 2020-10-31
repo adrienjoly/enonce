@@ -44,20 +44,25 @@ const COMMANDS = {
     const studentsPerVariant = [...Array(nbVariants)].map(() => 0);
     console.warn(`reading students list from stdin...`);
     const lines = (await readStdin()).split(/[\r\n]+/g);
-    for (let email of lines) {
-      if (!email) continue; // skip empty lines
+    const students = lines.filter(String); // skip empty lines
+    for (let email of students) {
       const studentId = hashCode(normalizeEmail(email));
       const variant = getStudentVariant(studentId, nbVariants);
       studentsPerVariant[variant]++;
       console.log(`- email: ${email} => variant: ${variant}`);
     }
+    console.log('Number of students:', students.length);
     console.log('Number of students per variants:', studentsPerVariant);
+    const unusedVariants = studentsPerVariant
+      .map((count, variant) =>  count === 0 ? variant : undefined)
+      .filter(Number); // exclude undefined values
+    console.log(`Number of variants without students:`, unusedVariants.length, '/', nbVariants, 'combinations');
     const maxStudentsWithCommonVariant = Math.max(...studentsPerVariant);
     console.log(`Highest number of students who share a same variant:`, maxStudentsWithCommonVariant);
     const mostSharedVariants = studentsPerVariant
       .map((count, variant) =>  count === maxStudentsWithCommonVariant ? variant : undefined)
       .filter(Number); // exclude undefined values
-    console.log(`Variant(s) most shared by the students:`, mostSharedVariants);
+    console.log(`Variants most shared by the students:`, mostSharedVariants);
   },
 };
 
