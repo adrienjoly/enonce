@@ -22,7 +22,9 @@ _Énoncé_ est une alternative partielle à [`js-test`](https://github.com/adrie
 
 ## Exemple d'usage pour l'enseignant – avec Google Classroom
 
-L'usage de Google Classroom permet de simplifier l'étape 4: la génération et transmission d'un numéro unique aléatoire à chaque étudiant·e.
+L'usage de Google Classroom demande un peu plus de configuration mais permet de simplifier la génération et transmission des énoncés aux étudiant·e·s.
+
+- Avant de commencer, créer un projet et un identifiant OAuth 2.0 permettant d'accéder à l'[API de Google Classroom](https://console.cloud.google.com/marketplace/product/google/classroom.googleapis.com), puis coller le `client_id` ainsi obtenu dans la propriété `google_signin_client_id` du fichier `data/auth.json`.
 
 - À l'étape 4, au lieu d'attribuer un numéro aléatoire à chaque étudiant·e, récupérer la liste des étudiants depuis Google Classroom (ex: à l'aide du CLI [gclass](https://www.npmjs.com/package/gclass)) puis vérifier le numéro de variante de chaque étudiant·e, calculé à partir de leur adresse email. (cf `$ npm run check student-variants`, documenté plus bas)
 

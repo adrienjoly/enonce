@@ -38,6 +38,7 @@
             setContent(window.marked(filledMarkdown));
           });
         } else if (!window.onGoogleLoaded) {
+          // source: https://developers.google.com/identity/sign-in/web/sign-in
           window.onGoogleUserChange = (googleUser) => {
             if (googleUser) {
               const profile = googleUser.getBasicProfile();
@@ -49,16 +50,14 @@
             }
           };
 
-          // source: https://developers.google.com/identity/sign-in/web/sign-in
+          let authConfig;
           window.onGoogleLoaded = () => {
             setContent(`
               <p>Connectez-vous avec votre compte d'étudiant·e.</p>
               <div id="login" class="g-signin2"></div>
             `);
             gapi.load("auth2", () => {
-              gapi.auth2.init({
-                client_id: "878632360760-icv8nam6d8eekmr1ouar7kv1r31fbuab.apps.googleusercontent.com"
-              }).then(() => {
+              gapi.auth2.init({ client_id: authConfig.google_signin_client_id }).then(() => {
                 gapi.signin2.render("login", {
                   scope: "email",
                   onsuccess: window.onGoogleUserChange,
@@ -67,12 +66,18 @@
             });
           };
 
-          // Let's load Google API, to render the Login button and call onGoogleUserChange()
-          const authScript = document.createElement("script");
-          authScript.src = "https://apis.google.com/js/platform.js?onload=onGoogleLoaded";
-          authScript.async = true;
-          authScript.defer = true;
-          document.body.appendChild(authScript);
+          loadResource("data/auth.json?t=" + Date.now(), (request) => {
+            authConfig = JSON.parse(request.response); // will be used by onGoogleLoaded()
+            console.log('Loaded auth config:', authConfig);
+
+            // Let's load Google API, to render the Login button
+            const authScript = document.createElement("script");
+            authScript.src = "https://apis.google.com/js/platform.js?onload=onGoogleLoaded";
+            authScript.async = true;
+            authScript.defer = true;
+            document.body.appendChild(authScript);
+          });
+
         } else {
           setContent("Un problème est survenu. Veuillez demander de l'aide à votre enseignant.");
         }
