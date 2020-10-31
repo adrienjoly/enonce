@@ -1,6 +1,6 @@
 const test = require('ava');
 
-const { modulo, hashCode } = require('./index.js');
+const { modulo, hashCode, normalizeEmail } = require('./index.js');
 
 test('modulo supports short student ids', t => {
   t.is(modulo('0', 2), 0);
@@ -18,4 +18,12 @@ test('hashCode can turn an email address into a number', t => {
   t.is(hashCode("address@email.com"), 1572473571);
   t.is(hashCode("addres2@email.com"), -1884772382);
   t.is(hashCode("address@email.org"), 1572485190);
+});
+ 
+test('normalizeEmail normalizes the email address', t => {
+  const normalized = "address@email.com";
+  t.is(normalizeEmail("address@email.com"), normalized);
+  t.is(normalizeEmail(" address@email.com"), normalized);
+  t.is(normalizeEmail("address@email.com "), normalized);
+  t.is(normalizeEmail("address@Email.com "), normalized);
 });

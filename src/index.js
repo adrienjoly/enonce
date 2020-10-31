@@ -26,10 +26,18 @@ function hashCode (str) {
   return hash;
 }
 
+/**
+ * Normalizes an email address.
+ */
+function normalizeEmail (email) {
+  return email.toLowerCase().trim();
+}
+
 try {
   // make the functions also loadable from Node.js
   module.exports = {
     modulo,
     hashCode,
+    normalizeEmail,
   };
 } catch (err) {}
