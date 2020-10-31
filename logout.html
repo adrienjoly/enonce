@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="stylesheet" href="assets/style.css">
+    <title>Énoncé</title>
+  </head>
+  <body>
+    <div id="app" class="container-lg px-3 my-5 markdown-body">
+      Déconnexion...
+    </div>
+
+    <script>
+      function setContent(html) {
+        document.getElementById("app").innerHTML = html;
+      }
+      function onReady() {
+        gapi.load("auth2", function() {
+          gapi.auth2.init({
+            client_id: "878632360760-icv8nam6d8eekmr1ouar7kv1r31fbuab.apps.googleusercontent.com"
+          }).then(() => {
+            const auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(() => {
+              setTimeout(() => window.location.href = `.`);
+              setContent(`<p>Redirection vers la page d'accueil...</p>`);
+            });
+          });
+        });
+      }
+    </script>
+
+    <script src="https://apis.google.com/js/platform.js?onload=onReady" async defer></script>
+
+  </body>
+</html>
