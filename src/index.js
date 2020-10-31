@@ -1,20 +1,7 @@
 /**
- * Modulo that also works for big integers stored as string.
- * It only works for positive numbers.
- * cf https://stackoverflow.com/a/16019504/592254
- */
-function modulo (divident, divisor) {
-  const partLength = 10;
-  while (divident.length > partLength) {
-      const part = divident.substring(0, partLength);
-      divident = (part % divisor) +  divident.substring(partLength);          
-  }
-  return divident % divisor;
-}
-
-/**
- * Hashes a string into a number.
+ * Hashes a string into a number. (which can be negative)
  * cf https://stackoverflow.com/a/7616484/592254
+ *  & https://stackoverflow.com/a/8076436/592254
  */
 function hashCode (str) {
   var hash = 0, i, chr;
@@ -36,7 +23,7 @@ function normalizeEmail (email) {
 /**
  * Returns a function that will pick a variant, given a studentId and an array of variants.
  */
-const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
+const variantPicker = (studentId) => (variants) => variants[studentId % variants.length];
 
 /**
  * Fills the right variant in the provided template, given the studentId, using variantPicker.
@@ -50,7 +37,6 @@ function fillTemplateForStudent (template, studentId) {
 try {
   // make the functions also loadable from Node.js
   module.exports = {
-    modulo,
     hashCode,
     normalizeEmail,
     variantPicker,

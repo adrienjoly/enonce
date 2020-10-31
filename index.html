@@ -27,9 +27,9 @@
         request.send();
       }
 
-      const studentId = window.location.search.replace("?studentId=", "");
+      const studentId = parseInt(window.location.search.replace("?studentId=", ""), 10);
 
-      if (parseInt(studentId) > 0) {
+      if (!isNaN(studentId)) {
         loadResource("data/enonce.md", (request) => {
           const markdownTemplate = request.response;
           setContent(window.marked(fillTemplateForStudent(markdownTemplate, studentId)));
