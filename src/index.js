@@ -23,7 +23,7 @@ function normalizeEmail (email) {
 /**
  * Returns a function that will pick a variant, given a studentId and an array of variants.
  */
-const variantPicker = (studentId) => (variants) => variants[studentId % variants.length];
+const variantPicker = (studentId) => (variants) => variants[Math.abs(studentId) % variants.length];
 
 /**
  * Fills the right variant in the provided template, given the studentId, using variantPicker.
