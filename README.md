@@ -26,7 +26,7 @@ L'usage de Google Classroom permet de simplifier l'étape 4: la génération et 
 
 - À l'étape 4, au lieu d'attribuer un numéro aléatoire à chaque étudiant·e, récupérer la liste des étudiants depuis Google Classroom (ex: à l'aide du CLI [gclass](https://www.npmjs.com/package/gclass)) puis vérifier le numéro de variante de chaque étudiant·e, calculé à partir de leur adresse email. (cf `$ npm run check student-variants`, documenté plus bas)
 
-- Créer un devoir sur Google Classroom, avec un lien direct vers la page de connexion de l'énoncé (`/login`) qui a été publié sur `surge.sh`.
+- Créer un devoir sur Google Classroom, avec un lien direct vers la racine de l'énoncé qui a été publié sur `surge.sh`.
 
 - Inviter les étudiant·e·s à s'identifier sur la page d'énoncé avec leur compte Google Classroom – en cliquant sur le bouton – puis à rendre leur travail via le devoir Google Classroom.
 
