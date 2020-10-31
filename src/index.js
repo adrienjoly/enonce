@@ -38,6 +38,15 @@ function normalizeEmail (email) {
  */
 const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
 
+/**
+ * Fills the right variant in the provided template, given the studentId, using variantPicker.
+ */
+function fillTemplateForStudent (template, studentId) {
+  const render = eval(`(variant, studentId) => \`${template.replace(/`/g, "\\`")}\``);
+  return render(variantPicker(studentId), studentId);
+}
+
+
 try {
   // make the functions also loadable from Node.js
   module.exports = {
@@ -45,5 +54,6 @@ try {
     hashCode,
     normalizeEmail,
     variantPicker,
+    fillTemplateForStudent,
   };
 } catch (err) {}

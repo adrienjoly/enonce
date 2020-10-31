@@ -1,6 +1,14 @@
 const test = require('ava');
 
-const { modulo, hashCode, normalizeEmail, variantPicker } = require('./index.js');
+const { fillTemplateForStudent, variantPicker, modulo, hashCode, normalizeEmail } = require('./index.js');
+
+
+test('fillTemplateForStudent', t => {
+  t.is(fillTemplateForStudent('abc', '123'), 'abc'); // no variant
+  t.is(fillTemplateForStudent('abc_${variant(["dummy"])}', '123'), 'abc_dummy'); // dummy variant
+  t.is(fillTemplateForStudent('abc_${variant(["even", "odd"])}', '123'), 'abc_odd');
+  t.is(fillTemplateForStudent('abc_${variant(["even", "odd"])}', '124'), 'abc_even');
+});
 
 test('variantPicker returns the right variant based on studentId', t => {
   t.is(variantPicker('1230')(['variant0', 'variant1', 'variant2']), 'variant0');
