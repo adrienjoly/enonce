@@ -75,6 +75,16 @@ function countVariantsFromTemplate (template) {
   return lcm(variantsPerPlaceholder);
 }
 
+/**
+ * Load a file from a web page.
+ */
+function loadResource(url, callback) {
+  const request = new XMLHttpRequest();
+  request.open("GET", url);
+  request.onload = () => callback(request);
+  request.send();
+}
+
 try {
   // make the functions also loadable from Node.js
   module.exports = {

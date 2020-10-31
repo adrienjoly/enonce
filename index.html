@@ -22,13 +22,6 @@
         document.getElementById("app").innerHTML = html;
       }
 
-      function loadResource(url, callback) {
-        const request = new XMLHttpRequest();
-        request.open("GET", url);
-        request.onload = () => callback(request);
-        request.send();
-      }
-
       function renderPage(studentId) {
         if (!isNaN(studentId)) {
           setContent("Chargement de l'énoncé en cours...");
