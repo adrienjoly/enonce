@@ -8,6 +8,7 @@
     "ava": "^3.13.0",
     "surge": "^0.21.6"
   },
+  "bin": "src/cli.js",
   "scripts": {
     "check": "node src/cli.js",
     "start": "npx http-server",
