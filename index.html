@@ -10,6 +10,7 @@
     <p id="app"></p>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
+    <script src="index.js"></script>
 
     <script>
       function setContent(html) {
@@ -21,17 +22,6 @@
         request.open("GET", url);
         request.onload = () => callback(request);
         request.send();
-      }
-
-      // modulo that also works for big integers stored as string
-      // cf https://stackoverflow.com/a/16019504/592254
-      function modulo (divident, divisor) {
-          const partLength = 10;
-          while (divident.length > partLength) {
-              const part = divident.substring(0, partLength);
-              divident = (part % divisor) +  divident.substring(partLength);          
-          }
-          return divident % divisor;
       }
 
       const variantPicker = (studentId) => (variants) => variants[modulo(studentId, variants.length)];
