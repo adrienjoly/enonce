@@ -12,7 +12,7 @@
   <body>
 
     <div id="app" class="container-lg px-3 my-5 markdown-body">
-      Connectez-vous avec votre compte d'étudiant·e.
+      <p>Connectez-vous avec votre compte d'étudiant·e.</p>
       <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
       <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
     </div>
@@ -32,31 +32,38 @@
         request.send();
       }
 
-      const studentId = parseInt(window.location.search.replace("?studentId=", ""), 10);
-
-      if (!isNaN(studentId)) {
-        setContent("Chargement de l'énoncé en cours...");
-        loadResource("data/enonce.md?t=" + Date.now(), (request) => {
-          const markdownTemplate = request.response;
-          const filledMarkdown = fillTemplateForStudent(markdownTemplate, studentId)
-          setContent(window.marked(filledMarkdown));
-        });
-      } else {
-        window.onGoogleUserChange = (googleUser) => {
-          if (googleUser) {
-            const profile = googleUser.getBasicProfile();
-            const studentId = hashCode(normalizeEmail(profile.getEmail()));
-            setTimeout(() => window.location.href = `./?studentId=${studentId}`);
-            setContent(`<p>Redirection vers l'énoncé...</p><a href="logout">Déconnexion</a>`);
-          }
-        };
-        // Let's load Google API, to render the Login button and call onGoogleUserChange()
-        const authScript = document.createElement("script");
-        authScript.src = "https://apis.google.com/js/platform.js";
-        authScript.async = true;
-        authScript.defer = true;
-        document.body.appendChild(authScript);
+      function renderPage(studentId) {
+        if (!isNaN(studentId)) {
+          setContent("Chargement de l'énoncé en cours...");
+          loadResource("data/enonce.md?t=" + Date.now(), (request) => {
+            const markdownTemplate = request.response;
+            const filledMarkdown = fillTemplateForStudent(markdownTemplate, studentId)
+            setContent(window.marked(filledMarkdown));
+          });
+        } else if (!window.onGoogleUserChange) {
+          window.onGoogleUserChange = (googleUser) => {
+            if (googleUser) {
+              const profile = googleUser.getBasicProfile();
+              const email = profile.getEmail();
+              const studentId = hashCode(normalizeEmail(email));
+              console.warn('Rendering from Google login:', { googleUser, email, studentId });
+              renderPage(studentId);
+              // TODO: add link to logout page
+            }
+          };
+          // Let's load Google API, to render the Login button and call onGoogleUserChange()
+          const authScript = document.createElement("script");
+          authScript.src = "https://apis.google.com/js/platform.js";
+          authScript.async = true;
+          authScript.defer = true;
+          document.body.appendChild(authScript);
+        } else {
+          setContent("Un problème est survenu. Veuillez demander de l'aide à votre enseignant.");
+        }
       }
+
+      const studentId = parseInt(window.location.search.replace("?studentId=", ""), 10);
+      renderPage(studentId);
     </script>
   </body>
 </html>
