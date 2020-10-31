@@ -9,6 +9,8 @@
     "surge": "^0.21.6"
   },
   "scripts": {
+    "start": "npx http-server",
+    "deploy": "surge --project . --domain $(cat .domain_name)",
     "test": "ava"
   },
   "repository": {
