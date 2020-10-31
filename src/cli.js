@@ -14,25 +14,26 @@ const readStdin = () => new Promise((resolve) => {
     .on("end", () => resolve(chunks.join("")));
 });
 
+const loadTemplate = (filePath = "data/enonce.md") => {
+  console.warn(`loading template from ${filePath}...`);
+  return promisify(fs.readFile)(filePath, "utf8");
+};
+
 const COMMANDS = {
   combinations: async () => {
-    const filePath = "data/enonce.md";
-    console.warn(`loading template from ${filePath}...`);
-    const template = await promisify(fs.readFile)(filePath, "utf8");
+    const template = await loadTemplate();
+    const nbVariants = countVariantsFromTemplate(template);
     console.warn(`=> number of combinations of variants:`);
-    console.log(countVariantsFromTemplate(template));
+    console.log(nbVariants);
   },
   "student-variants": async () => {
-    const filePath = "data/enonce.md";
-    console.warn(`loading template from ${filePath}...`);
-    const template = await promisify(fs.readFile)(filePath, "utf8");
+    const template = await loadTemplate();
     const nbVariants = countVariantsFromTemplate(template);
     const studentsPerVariant = [...Array(nbVariants)].map(() => 0);
-
     console.warn(`reading students list from stdin...`);
     const lines = (await readStdin()).split(/[\r\n]+/g);
     for (let email of lines) {
-      if (!email) continue;
+      if (!email) continue; // skip empty lines
       const studentId = hashCode(normalizeEmail(email));
       const variant = getStudentVariant(studentId, nbVariants);
       studentsPerVariant[variant]++;
