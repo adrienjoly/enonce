@@ -8,10 +8,11 @@
     <title>Énoncé</title>
   </head>
   <body>
-    <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
-    <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
 
-    <div id="app" class="container-lg px-3 my-5 markdown-body"></div>
+    <div id="app" class="container-lg px-3 my-5 markdown-body">
+      <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
+      <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
+    </div>
 
     <script>
       function setContent(html) {
