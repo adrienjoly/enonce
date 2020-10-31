@@ -21,9 +21,14 @@ function normalizeEmail (email) {
 }
 
 /**
+ * Returns the number of the variant to pick for a studentId, given the number of variants.
+ */
+const getStudentVariant = (studentId, nbVariants) => Math.abs(studentId) % nbVariants;
+
+/**
  * Returns a function that will pick a variant, given a studentId and an array of variants.
  */
-const variantPicker = (studentId) => (variants) => variants[Math.abs(studentId) % variants.length];
+const variantPicker = (studentId) => (variants) => variants[getStudentVariant(studentId, variants.length)];
 
 /**
  * Fills the right variant in the provided template, given the studentId, using variantPicker.
@@ -75,6 +80,7 @@ try {
   module.exports = {
     hashCode,
     normalizeEmail,
+    getStudentVariant,
     variantPicker,
     fillTemplateForStudent,
     countVariantsFromTemplate,

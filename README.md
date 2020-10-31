@@ -45,3 +45,10 @@ $ npm run check combinations   # from data/enonce.md => 3
 $ npm start                    # to test the UI locally
 $ npm run deploy               # to deploy using surge.io
 ```
+
+Get the distribution of variants among students, from a csv list of students with email address in the first column:
+
+```sh
+$ cat students.csv | cut -d, -f1 | npm run check student-variants
+# => e.g. { studentsPerVariant: [ 4, 7, 8 ] }
+```
