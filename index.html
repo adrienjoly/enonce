@@ -4,7 +4,6 @@
     <meta charset="utf-8"/>
     <META HTTP-EQUIV="Pragma" CONTENT="no-cache">
     <META HTTP-EQUIV="Expires" CONTENT="-1">
-    <meta name="google-signin-client_id" content="878632360760-icv8nam6d8eekmr1ouar7kv1r31fbuab.apps.googleusercontent.com">
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="stylesheet" href="assets/style.css">
     <title>Énoncé</title>
@@ -12,9 +11,7 @@
   <body>
 
     <div id="app" class="container-lg px-3 my-5 markdown-body">
-      <p>Connectez-vous avec votre compte d'étudiant·e.</p>
-      <!-- from https://developers.google.com/identity/sign-in/web/sign-in -->
-      <div class="g-signin2" data-onsuccess="onGoogleUserChange"></div>
+      Chargement de l'énoncé...      
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/marked@1.2.2/marked.min.js"></script>
@@ -40,7 +37,7 @@
             const filledMarkdown = fillTemplateForStudent(markdownTemplate, studentId)
             setContent(window.marked(filledMarkdown));
           });
-        } else if (!window.onGoogleUserChange) {
+        } else if (!window.onGoogleLoaded) {
           window.onGoogleUserChange = (googleUser) => {
             if (googleUser) {
               const profile = googleUser.getBasicProfile();
@@ -51,9 +48,28 @@
               // TODO: add link to logout page
             }
           };
+
+          // source: https://developers.google.com/identity/sign-in/web/sign-in
+          window.onGoogleLoaded = () => {
+            setContent(`
+              <p>Connectez-vous avec votre compte d'étudiant·e.</p>
+              <div id="login" class="g-signin2"></div>
+            `);
+            gapi.load("auth2", () => {
+              gapi.auth2.init({
+                client_id: "878632360760-icv8nam6d8eekmr1ouar7kv1r31fbuab.apps.googleusercontent.com"
+              }).then(() => {
+                gapi.signin2.render("login", {
+                  scope: "email",
+                  onsuccess: window.onGoogleUserChange,
+                });
+              });
+            });
+          };
+
           // Let's load Google API, to render the Login button and call onGoogleUserChange()
           const authScript = document.createElement("script");
-          authScript.src = "https://apis.google.com/js/platform.js";
+          authScript.src = "https://apis.google.com/js/platform.js?onload=onGoogleLoaded";
           authScript.async = true;
           authScript.defer = true;
           document.body.appendChild(authScript);
