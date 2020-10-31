@@ -24,7 +24,7 @@ _Énoncé_ est une alternative partielle à [`js-test`](https://github.com/adrie
 
 L'usage de Google Classroom permet de simplifier l'étape 4: la génération et transmission d'un numéro unique aléatoire à chaque étudiant·e.
 
-- À l'étape 4, au lieu d'attribuer un numéro aléatoire à chaque étudiant·e, récupérer leur numéro d'identifiant Google Classroom à l'aide de [classroom-assignments-cli](https://github.com/adrienjoly/classroom-assignments-cli).
+- À l'étape 4, au lieu d'attribuer un numéro aléatoire à chaque étudiant·e, récupérer la liste des étudiants depuis Google Classroom (ex: à l'aide du CLI [gclass](https://www.npmjs.com/package/gclass)) puis vérifier le numéro de variante de chaque étudiant·e, calculé à partir de leur adresse email. (cf `$ npm run check student-variants`, documenté plus bas)
 
 - Créer un devoir sur Google Classroom, avec un lien direct vers la page de connexion de l'énoncé (`/login`) qui a été publié sur `surge.sh`.
 
