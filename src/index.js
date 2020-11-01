@@ -76,6 +76,16 @@ function countVariantsFromTemplate (template) {
 }
 
 /**
+ * Redirect to HTTPS if necessary. (required by Google Signin)
+ */
+function ensureHttps() {
+  if (window.location.href.match(/^http\:\/\/(?!localhost|(.*\.ngrok\.io)).*$/)) {
+    console.log('Switching to HTTPS...');
+    window.location.href = window.location.href.replace('http:', 'https:');
+  }
+}
+
+/**
  * Load a file from a web page.
  */
 function loadResource(url, callback) {
