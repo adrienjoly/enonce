@@ -37,14 +37,19 @@
             setContent(window.marked([header, filledMarkdown].join('\n\n')));
           });
         } else if (!window.onGoogleLoaded) {
-          initGoogleAuth(() => {
+          console.info('No studentId parameter found => trying Google Auth');
+          initGoogleAuth((err) => {
+            if (err) {
+              console.error(err);
+              setContent("Veuillez ouvrir l'URL individuelle fournie par votre enseignant.");
+              return;
+            }
             gapi.signin2.render("login", {
               scope: "email",
               onsuccess: (googleUser) => {
                 if (!googleUser) return;
                 const email = googleUser.getBasicProfile().getEmail();
                 const studentId = hashCode(normalizeEmail(email));
-                console.warn('Rendering from Google login:', { googleUser, email, studentId });
                 renderPage(studentId, { googleUser, email });
               },
             });

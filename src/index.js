@@ -103,9 +103,14 @@ function initGoogleAuth(callback) {
     const authConfig = JSON.parse(request.response);
     console.log('Loaded auth config:', authConfig);
 
+    if (!authConfig.google_signin_client_id) {
+      callback(new Error('No google_signin_client_id found in data/auth.json => skipping Google Auth'));
+      return;
+    }
+
     window.onGoogleLoaded = () =>
       gapi.load("auth2", () =>
-        gapi.auth2.init({ client_id: authConfig.google_signin_client_id }).then(callback)
+        gapi.auth2.init({ client_id: authConfig.google_signin_client_id }).then(() => callback())
       );
 
     // Let's load Google API --> onGoogleLoaded()
