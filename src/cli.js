@@ -47,9 +47,10 @@ const COMMANDS = {
     console.warn(`reading students list from stdin...`);
     const lines = (await readStdin()).split(/[\r\n]+/g);
     const students = lines.filter(String); // skip empty lines
+    console.log(['email', 'studentId'].join('\t'));
     for (let email of students) {
       const studentId = hashCode(normalizeEmail(email));
-      console.log(`- email: ${email} => studentId: ${studentId}`);
+      console.log([email, studentId].join('\t'));
     }
   },
   // Return the variant for each student email address passed thru stdin
