@@ -42,6 +42,16 @@ const COMMANDS = {
     const rendered = fillTemplateForStudent(template, studentId);
     console.log(rendered);
   },
+  // Return the studentId generated for each email address passed thru stdin
+  "student-ids": async () => {
+    console.warn(`reading students list from stdin...`);
+    const lines = (await readStdin()).split(/[\r\n]+/g);
+    const students = lines.filter(String); // skip empty lines
+    for (let email of students) {
+      const studentId = hashCode(normalizeEmail(email));
+      console.log(`- email: ${email} => studentId: ${studentId}`);
+    }
+  },
   // Return the variant for each student email address passed thru stdin
   "student-variants": async () => {
     const template = await loadTemplate();
