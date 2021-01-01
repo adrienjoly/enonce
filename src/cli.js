@@ -29,17 +29,20 @@ const loadTemplate = () => {
 };
 
 const COMMANDS = {
+  // Return the number of possible variant combinations from the template
   combinations: async () => {
     const template = await loadTemplate();
     const nbVariants = countVariantsFromTemplate(template);
     console.warn(`=> number of combinations of variants:`);
     console.log(nbVariants);
   },
+  // Render the template for a given studentId
   render: async (studentId) => {
     const template = await loadTemplate();
     const rendered = fillTemplateForStudent(template, studentId);
     console.log(rendered);
   },
+  // Return the variant for each student email address passed thru stdin
   "student-variants": async () => {
     const template = await loadTemplate();
     const nbVariants = countVariantsFromTemplate(template);
