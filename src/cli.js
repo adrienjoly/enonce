@@ -12,6 +12,8 @@ const {
 
 const USAGE = `$ npm run check <command> <parameter>`;
 
+const filePath = process.env.TEMPLATE || "data/enonce.md";
+
 const readStdin = () =>
   new Promise((resolve) => {
     const chunks = [];
@@ -21,7 +23,7 @@ const readStdin = () =>
       .on("end", () => resolve(chunks.join("")));
   });
 
-const loadTemplate = (filePath = "data/enonce.md") => {
+const loadTemplate = () => {
   console.warn(`loading template from ${filePath}...`);
   return promisify(fs.readFile)(filePath, "utf8");
 };
