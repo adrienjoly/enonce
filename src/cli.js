@@ -92,5 +92,8 @@ if (typeof method !== "function") {
   console.error(`Commands: ${Object.keys(COMMANDS).join(", ")}`);
   process.exit(1);
 } else {
-  method(...parameters);
+  method(...parameters).catch(err => {
+    console.error(err);
+    process.exit(2);
+  });
 }
