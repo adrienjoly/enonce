@@ -27,13 +27,14 @@
         document.getElementById("app").innerHTML = html;
       }
 
-      function renderPage(studentId) {
+      function renderPage(studentId, authData) {
         if (!isNaN(studentId)) {
           setContent("Chargement de l'énoncé en cours...");
           loadResource("data/enonce.md?t=" + Date.now(), (request) => {
             const markdownTemplate = request.response;
             const filledMarkdown = fillTemplateForStudent(markdownTemplate, studentId)
-            setContent(window.marked(filledMarkdown));
+            const header = !authData ? '' : `<p style="font-size:small;">Connecté·e en tant que ${authData.email}. <a href="/logout">Se déconnecter</a>.</p>`;
+            setContent(window.marked([header, filledMarkdown].join('\n\n')));
           });
         } else if (!window.onGoogleLoaded) {
           initGoogleAuth(() => {
@@ -44,8 +45,7 @@
                 const email = googleUser.getBasicProfile().getEmail();
                 const studentId = hashCode(normalizeEmail(email));
                 console.warn('Rendering from Google login:', { googleUser, email, studentId });
-                renderPage(studentId);
-                // TODO: add link to logout page
+                renderPage(studentId, { googleUser, email });
               },
             });
           });
