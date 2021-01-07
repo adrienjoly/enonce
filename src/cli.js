@@ -5,6 +5,7 @@ const { promisify } = require("util");
 const {
   countVariantsFromTemplate,
   fillTemplateForStudent,
+  getVariantValuesForStudent,
   getStudentVariant,
   normalizeEmail,
   hashCode,
@@ -42,7 +43,16 @@ const COMMANDS = {
     const rendered = fillTemplateForStudent(template, studentId);
     console.log(rendered);
   },
-  // Return the studentId generated for each email address passed thru stdin
+  // Return the value of each variant placeholder, for a given studentId. (one line per value)
+  "variant-data": async (studentId) => {
+    if (isNaN(studentId)) {
+      throw new Error(`please provide a valid studentId`);
+    }
+    const template = await loadTemplate();
+    const variantValues = getVariantValuesForStudent(template, studentId);
+    console.log(variantValues.join('\n'));
+  },
+  // Return the studentId generated for each email address passed thru stdin, in TSV format
   "student-ids": async () => {
     console.warn(`reading students list from stdin...`);
     const lines = (await readStdin()).split(/[\r\n]+/g);
@@ -53,7 +63,7 @@ const COMMANDS = {
       console.log([email, studentId].join('\t'));
     }
   },
-  // Return the variant for each student email address passed thru stdin
+  // Return various statistics to measure the distribution of variants for each student email address passed thru stdin
   "student-variants": async () => {
     const template = await loadTemplate();
     const nbVariants = countVariantsFromTemplate(template);
