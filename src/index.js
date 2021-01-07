@@ -34,8 +34,25 @@ const variantPicker = (studentId) => (variants) => variants[getStudentVariant(st
  * Fills the right variant in the provided template, given the studentId, using variantPicker.
  */
 function fillTemplateForStudent (template, studentId) {
+  // render() renders the template, given the studentId and variant() function.
   const render = eval(`(variant, studentId) => \`${template.replace(/`/g, "\\`")}\``);
-  return render(variantPicker(studentId), studentId);
+  // variant() returns the value of a variant placeholder, for a particular student
+  const variant = variantPicker(studentId);
+  return render(variant, studentId);
+}
+
+/**
+ * Returns the value for each variant placeholder found in the provided template, for the given studentId.
+ */
+function getVariantValuesForStudent (template, studentId) {
+  // renderTemplate() renders the template by running its `${variant()}` placeholders, given the studentId and variant() function.
+  const renderTemplate = eval(`(variant, studentId) => \`${template.replace(/`/g, "\\`")}\``);
+  const variantValues = [];
+  // variantAccumulator() accumulates values of each variant placeholder
+  const variantAccumulator = (variants) =>
+    variantValues.push(variantPicker(studentId)(variants));
+  renderTemplate(variantAccumulator, studentId);
+  return variantValues;
 }
 
 /**
@@ -130,6 +147,7 @@ try {
     getStudentVariant,
     variantPicker,
     fillTemplateForStudent,
+    getVariantValuesForStudent,
     countVariantsFromTemplate,
   };
 } catch (err) {}

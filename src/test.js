@@ -1,6 +1,21 @@
 const test = require('ava');
 
-const { fillTemplateForStudent, variantPicker, hashCode, normalizeEmail, countVariantsFromTemplate } = require('./index.js');
+const {
+  getVariantValuesForStudent,
+  fillTemplateForStudent,
+  variantPicker,
+  hashCode,
+  normalizeEmail,
+  countVariantsFromTemplate
+} = require('./index.js');
+
+test('getVariantValuesForStudent', t => {
+  t.deepEqual(getVariantValuesForStudent('abc', 123), []); // no variant
+  t.deepEqual(getVariantValuesForStudent('abc_${variant(["dummy"])}', 123), [ 'dummy' ]); // dummy variant
+  t.deepEqual(getVariantValuesForStudent('abc_${variant(["even", "odd"])}', 123), [ 'odd' ]);
+  t.deepEqual(getVariantValuesForStudent('abc_${variant(["even", "odd"])}', 124), [ 'even' ]);
+  t.deepEqual(getVariantValuesForStudent('abc_${variant(["even", "odd"])}_\n_${variant(["dummy"])}_', 124), [ 'even', 'dummy' ]); // two variant placeholders
+});
 
 test('fillTemplateForStudent', t => {
   t.is(fillTemplateForStudent('abc', 123), 'abc'); // no variant
