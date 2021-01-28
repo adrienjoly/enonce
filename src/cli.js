@@ -63,6 +63,20 @@ const COMMANDS = {
       console.log([email, studentId].join('\t'));
     }
   },
+  // Return the variant number for each student email address passed thru stdin, in csv format
+  "get-student-variants": async () => {
+    const template = await loadTemplate();
+    const nbVariants = countVariantsFromTemplate(template);
+    console.warn(`reading students list from stdin...`);
+    const lines = (await readStdin()).split(/[\r\n]+/g);
+    const students = lines.filter(String); // skip empty lines
+    console.log(`"email","variant"`);
+    for (let email of students) {
+      const studentId = hashCode(normalizeEmail(email));
+      const variant = getStudentVariant(studentId, nbVariants);
+      console.log(`"${email}",${variant}`);
+    }
+  },
   // Return various statistics to measure the distribution of variants for each student email address passed thru stdin
   "student-variants": async () => {
     const template = await loadTemplate();
