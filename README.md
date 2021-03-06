@@ -73,4 +73,7 @@ $ cat "student-emails.txt" | TEMPLATE="enonce.md" npx enonce get-student-variant
 $ TEMPLATE="enonce.md" npx enonce combinations
 $ TEMPLATE="enonce.md" npx enonce variant-data 54
 $ TEMPLATE="enonce.md" npx enonce render 54 > "enonce-variant-54.md"
+
+# Deploy the HTML page for a template
+$ TEMPLATE="enonce.md" npx enonce deploy
 ```

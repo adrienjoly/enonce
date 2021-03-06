@@ -10,10 +10,12 @@ const {
   normalizeEmail,
   hashCode,
 } = require("./index.js");
+const surge = require("surge");
 
 const USAGE = `$ npm run check <command> <parameter>`;
 
-const filePath = process.env.TEMPLATE || "data/enonce.md";
+const DEFAULT_TEMPLATE = "data/enonce.md";
+const filePath = process.env.TEMPLATE || DEFAULT_TEMPLATE;
 
 const readStdin = () =>
   new Promise((resolve) => {
@@ -103,6 +105,20 @@ const COMMANDS = {
       .map((count, variant) =>  count === maxStudentsWithCommonVariant ? variant : undefined)
       .filter(Number); // exclude undefined values
     console.log(`Variants most shared by the students:`, mostSharedVariants);
+  },
+  "deploy": async() => {
+    if (!process.env.TEMPLATE) {
+      throw new Error("Missing environment variable: TEMPLATE");
+    }
+    fs.renameSync(DEFAULT_TEMPLATE, DEFAULT_TEMPLATE + ".bak");
+    try {
+      fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, DEFAULT_TEMPLATE);
+      const deploy = surge({ default: "publish" });
+      const domain = process.env.SURGE_DOMAIN;
+      deploy([ "--project", ".", ...(domain ? [ "--domain", domain ] : []) ]);
+    } finally {
+      fs.renameSync(DEFAULT_TEMPLATE + ".bak", DEFAULT_TEMPLATE);
+    }
   },
 };
 
