@@ -67,8 +67,10 @@ $ npm install github:adrienjoly/enonce
 # Generate student IDs and variant numbers from their email address
 $ cat "student-emails.txt" | npx enonce student-ids > "student-ids.tsv"
 $ cat "student-emails.txt" | TEMPLATE="enonce.md" npx enonce student-variants
+$ cat "student-emails.txt" | TEMPLATE="enonce.md" npx enonce get-student-variants > "student-variants.csv"
 
 # Check and render the template
 $ TEMPLATE="enonce.md" npx enonce combinations
+$ TEMPLATE="enonce.md" npx enonce variant-data 54
 $ TEMPLATE="enonce.md" npx enonce render 54 > "enonce-variant-54.md"
 ```
