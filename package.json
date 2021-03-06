@@ -5,8 +5,7 @@
   "description": "Application Web de rendu d'énoncé avec variantes, pour évaluer les étudiant·e·s de manière individuelle.",
   "license": "ISC",
   "devDependencies": {
-    "ava": "^3.13.0",
-    "surge": "^0.21.6"
+    "ava": "^3.13.0"
   },
   "bin": "src/cli.js",
   "scripts": {
@@ -18,5 +17,8 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/adrienjoly/enonce.git"
+  },
+  "dependencies": {
+    "surge": "^0.21.7"
   }
 }
