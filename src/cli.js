@@ -114,7 +114,10 @@ const COMMANDS = {
     fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}`, `${localDir}/${DEFAULT_TEMPLATE}.bak`);
 
     function exitHandler() {
-      fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}.bak`, `${localDir}/${DEFAULT_TEMPLATE}`);
+      try {
+        // if running the cli thru npx, the files may have been removed already => restore is unnecessary and will fail
+        fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}.bak`, `${localDir}/${DEFAULT_TEMPLATE}`);
+      } finally {}
     }
     
     process.on('exit', exitHandler);              // when app is closing
