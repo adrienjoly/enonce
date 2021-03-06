@@ -110,14 +110,14 @@ const COMMANDS = {
     if (!process.env.TEMPLATE) {
       throw new Error("Missing environment variable: TEMPLATE");
     }
-    fs.renameSync(DEFAULT_TEMPLATE, DEFAULT_TEMPLATE + ".bak");
+    fs.renameSync(`${__dirname}/${DEFAULT_TEMPLATE}`, `${__dirname}/${DEFAULT_TEMPLATE}.bak`);
     try {
-      fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, DEFAULT_TEMPLATE);
+      fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${__dirname}/${DEFAULT_TEMPLATE}`);
       const deploy = surge({ default: "publish" });
       const domain = process.env.SURGE_DOMAIN;
-      deploy([ "--project", ".", ...(domain ? [ "--domain", domain ] : []) ]);
+      deploy([ "--project", __dirname, ...(domain ? [ "--domain", domain ] : []) ]);
     } finally {
-      fs.renameSync(DEFAULT_TEMPLATE + ".bak", DEFAULT_TEMPLATE);
+      fs.renameSync(`${__dirname}/${DEFAULT_TEMPLATE}.bak`, `${__dirname}/${DEFAULT_TEMPLATE}`);
     }
   },
 };
