@@ -112,17 +112,22 @@ const COMMANDS = {
     }
     const localDir = `${__dirname}/../`; // because the file is in the "src" subdir of the "enonce" project
     fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}`, `${localDir}/${DEFAULT_TEMPLATE}.bak`);
-    console.log("cwd:", process.cwd() + "/" + process.env.TEMPLATE);
-    console.log("PWD:", process.env.PWD + "/" + process.env.TEMPLATE);
-    console.log("argv0:", process.argv[0] + "/" + process.env.TEMPLATE);
-    try {
-      fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${localDir}/${DEFAULT_TEMPLATE}`);
-      const deploy = surge({ default: "publish" });
-      const domain = process.env.SURGE_DOMAIN;
-      deploy([ "--project", localDir, ...(domain ? [ "--domain", domain ] : []) ]);
-    } finally {
+
+    function exitHandler() {
       fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}.bak`, `${localDir}/${DEFAULT_TEMPLATE}`);
     }
+    
+    process.on('exit', exitHandler);              // when app is closing
+    process.on('SIGINT', exitHandler);            // ctrl+c event
+    process.on('SIGUSR1', exitHandler);           // catches "kill pid" (for example: nodemon restart)
+    process.on('SIGUSR2', exitHandler);           // "
+    process.on('uncaughtException', exitHandler); // catches uncaught exceptions
+
+    fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${localDir}/${DEFAULT_TEMPLATE}`);
+    const deploy = surge({ default: "publish" });
+    const domain = process.env.SURGE_DOMAIN;
+    deploy([ "--project", localDir, ...(domain ? [ "--domain", domain ] : []) ]);
+    // Note: when deploy ends, exitHandler() will be called to restore the default enonce.md file
   },
 };
 
