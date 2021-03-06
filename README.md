@@ -38,6 +38,8 @@ L'usage de Google Classroom demande un peu plus de configuration mais permet de 
 
 ## CLI
 
+## Usage from local install
+
 ```sh
 $ git clone https://github.com/adrienjoly/enonce.git
 $ cd enonce
@@ -54,4 +56,19 @@ Get the distribution of variants among students, from a csv list of students wit
 ```sh
 $ cat students.csv | cut -d, -f1 | npm run check student-variants
 # => e.g. { studentsPerVariant: [ 4, 7, 8 ] }
+```
+
+## Usage with `npx`
+
+```sh
+# Install "enonce" (or replace "enonce" by "github:adrienjoly/enonce" in the commands below)
+$ npm install github:adrienjoly/enonce
+
+# Generate student IDs and variant numbers from their email address
+$ cat "student-emails.txt" | npx enonce student-ids > "student-ids.tsv"
+$ cat "student-emails.txt" | TEMPLATE="enonce.md" npx enonce student-variants
+
+# Check and render the template
+$ TEMPLATE="enonce.md" npx enonce combinations
+$ TEMPLATE="enonce.md" npx enonce render 54 > "enonce-variant-54.md"
 ```
