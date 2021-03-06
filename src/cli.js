@@ -110,14 +110,15 @@ const COMMANDS = {
     if (!process.env.TEMPLATE) {
       throw new Error("Missing environment variable: TEMPLATE");
     }
-    fs.renameSync(`${__dirname}/${DEFAULT_TEMPLATE}`, `${__dirname}/${DEFAULT_TEMPLATE}.bak`);
+    const localDir = `${__dirname}/../`; // because the file is in the "src" subdir of the "enonce" project
+    fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}`, `${localDir}/${DEFAULT_TEMPLATE}.bak`);
     try {
-      fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${__dirname}/${DEFAULT_TEMPLATE}`);
+      fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${localDir}/${DEFAULT_TEMPLATE}`);
       const deploy = surge({ default: "publish" });
       const domain = process.env.SURGE_DOMAIN;
-      deploy([ "--project", __dirname, ...(domain ? [ "--domain", domain ] : []) ]);
+      deploy([ "--project", localDir, ...(domain ? [ "--domain", domain ] : []) ]);
     } finally {
-      fs.renameSync(`${__dirname}/${DEFAULT_TEMPLATE}.bak`, `${__dirname}/${DEFAULT_TEMPLATE}`);
+      fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}.bak`, `${localDir}/${DEFAULT_TEMPLATE}`);
     }
   },
 };
