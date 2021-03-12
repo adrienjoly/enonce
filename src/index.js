@@ -96,7 +96,7 @@ function countVariantsFromTemplate (template) {
   const variantsPerPlaceholder =
     [...template.matchAll(/variant\(([^\)]*)\)/g)]
       .map(match => match[1])
-      .map(variantsStr => JSON.parse(variantsStr))
+      .map(variantsStr => eval(variantsStr))
       .map(variants => variants.length);
   return lcm(variantsPerPlaceholder);
 }
