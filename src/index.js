@@ -37,7 +37,12 @@ function fillTemplateForStudent (template, studentId) {
   // render() renders the template, given the studentId and variant() function.
   const render = eval(`(variant, studentId) => \`${template.replace(/`/g, "\\`")}\``);
   // variant() returns the value of a variant placeholder, for a particular student
-  const variant = variantPicker(studentId);
+  const variant = (variants) => { 
+    if (!Array.isArray(variants)) {
+      throw new Error(`parameter of variant() should be an array, got: ${typeof variants}`);
+    }
+    return variantPicker(studentId)(variants);
+  };
   return render(variant, studentId);
 }
 
@@ -49,8 +54,12 @@ function getVariantValuesForStudent (template, studentId) {
   const renderTemplate = eval(`(variant, studentId) => \`${template.replace(/`/g, "\\`")}\``);
   const variantValues = [];
   // variantAccumulator() accumulates values of each variant placeholder
-  const variantAccumulator = (variants) =>
+  const variantAccumulator = (variants) => {
+    if (!Array.isArray(variants)) {
+      throw new Error(`parameter of variant() should be an array, got: ${typeof variants}`);
+    }
     variantValues.push(variantPicker(studentId)(variants));
+  };
   renderTemplate(variantAccumulator, studentId);
   return variantValues;
 }

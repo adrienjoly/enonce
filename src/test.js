@@ -22,6 +22,7 @@ test('fillTemplateForStudent', t => {
   t.is(fillTemplateForStudent('abc_${variant(["dummy"])}', 123), 'abc_dummy'); // dummy variant
   t.is(fillTemplateForStudent('abc_${variant(["even", "odd"])}', 123), 'abc_odd');
   t.is(fillTemplateForStudent('abc_${variant(["even", "odd"])}', 124), 'abc_even');
+  t.throws(() => fillTemplateForStudent('abc_${variant("not", "array")}', 124), { message: 'parameter of variant() should be an array, got: string' });
 });
 
 test('variantPicker returns the right variant based on studentId', t => {
