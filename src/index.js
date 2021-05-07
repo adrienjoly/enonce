@@ -94,6 +94,8 @@ function countVariantsFromTemplate (template) {
   }
   // now, let's compute
   const variantsPerPlaceholder =
+    [...template.matchAll(/variant\(\[([^\]]*)\]\)/g)] // TODO: re-utiliser render() ?
+      .map(match => `[${match[1]}]`)
       .map(variantsStr => {
         try {
           return eval(variantsStr)
