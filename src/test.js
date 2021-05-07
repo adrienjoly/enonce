@@ -53,6 +53,7 @@ test('normalizeEmail normalizes the email address', t => {
 test('countVariantsFromTemplate computes the number of combinations of variants', t => {
   t.is(countVariantsFromTemplate('- ${variant(["hello","hi","hey"])}'), 3);
   t.is(countVariantsFromTemplate("- ${variant(['hello','hi','hey'])}"), 3); // tolerate single quotes // used to fail with SyntaxError: Unexpected token \' in JSON at position 1
+  t.is(countVariantsFromTemplate("- ${variant(['he(ll)o','hi','hey'])}"), 3); // tolerate parenthesis
   t.is(countVariantsFromTemplate('- ${ variant(["hello","hi","hey"]) }'), 3); // tolerate spaces
   t.is(countVariantsFromTemplate('- ${ a = variant(["hello","hi","hey"]) } ${ a }'), 3); // tolerate variables
   t.is(countVariantsFromTemplate('- ${variant(["hello","hi","hey"])}${variant([";",","])} ${variant(["world","all"])} -'), 6);
