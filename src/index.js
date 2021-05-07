@@ -94,9 +94,14 @@ function countVariantsFromTemplate (template) {
   }
   // now, let's compute
   const variantsPerPlaceholder =
-    [...template.matchAll(/variant\(([^\)]*)\)/g)]
-      .map(match => match[1])
-      .map(variantsStr => eval(variantsStr))
+      .map(variantsStr => {
+        try {
+          return eval(variantsStr)
+        } catch (err) {
+          console.error(err)
+          console.error("code:", variantsStr);
+        }
+      })
       .map(variants => variants.length);
   return lcm(variantsPerPlaceholder);
 }
