@@ -25,6 +25,20 @@ test('fillTemplateForStudent', t => {
   t.throws(() => fillTemplateForStudent('abc_${variant("not", "array")}', 124), { message: 'parameter of variant() should be an array, got: string' });
 });
 
+test('fillTemplateForStudent supports variables', t => {
+  // variable definition in a HTML comment element
+  t.regex(
+    fillTemplateForStudent('<!--${ this.myVars = { a: variant(["val"]) } }-->${ this.myVars.a }', 1),
+    /val$/
+  );
+  // variable definition and reference in same placeholder
+  t.is(
+    fillTemplateForStudent('${ this.myVars = { a: variant(["val"]) }, this.myVars.a }', 1),
+    "val"
+  );
+});
+
+
 test('variantPicker returns the right variant based on studentId', t => {
   t.is(variantPicker(1230)(['variant0', 'variant1', 'variant2']), 'variant0');
   t.is(variantPicker(1231)(['variant0', 'variant1', 'variant2']), 'variant1');
