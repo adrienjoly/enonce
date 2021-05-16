@@ -7,12 +7,12 @@ const {
   getStudentVariant,
   normalizeEmail,
   hashCode,
+  getTemplateVariablesForStudent,
 } = require("./index.js");
 
 const DEFAULT_TEMPLATE = "data/enonce.md";
-const filePath = process.env.TEMPLATE || DEFAULT_TEMPLATE;
 
-const loadTemplate = () => {
+const loadTemplate = (filePath = process.env.TEMPLATE || DEFAULT_TEMPLATE) => {
   console.warn(`loading template from ${filePath}...`);
   return fs.promises.readFile(filePath, "utf8");
 };
@@ -36,8 +36,12 @@ module.exports = {
   },
   // Render the template for a given studentId
   render: async (studentId) => {
+    const { LOAD_VARS_FROM_TEMPLATE } = process.env;
+    const variables = LOAD_VARS_FROM_TEMPLATE
+      ? getTemplateVariablesForStudent(await loadTemplate(LOAD_VARS_FROM_TEMPLATE), studentId)
+      : {};
     const template = await loadTemplate();
-    const rendered = fillTemplateForStudent(template, studentId);
+    const rendered = fillTemplateForStudent.call(variables, template, studentId);
     console.log(rendered);
   },
   // Return the value of each variant placeholder, for a given studentId. (one line per value)
