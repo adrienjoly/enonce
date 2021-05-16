@@ -6,7 +6,8 @@ const {
   variantPicker,
   hashCode,
   normalizeEmail,
-  countVariantsFromTemplate
+  countVariantsFromTemplate,
+  getTemplateVariablesForStudent,
 } = require('./index.js');
 
 test('getVariantValuesForStudent', t => {
