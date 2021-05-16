@@ -1,4 +1,5 @@
 const test = require('ava');
+const childProcess = require('child_process');
 
 const {
   getVariantValuesForStudent,
@@ -9,6 +10,8 @@ const {
   countVariantsFromTemplate,
   getTemplateVariablesForStudent,
 } = require('./index.js');
+
+const cli = require('./cli-commands.js');
 
 test('getVariantValuesForStudent', t => {
   t.deepEqual(getVariantValuesForStudent('abc', 123), []); // no variant
@@ -83,4 +86,30 @@ test('getTemplateVariablesForStudent returns variables defined in the template',
     getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 1),
     { myVars: { a: "c" } }
   );
+});
+
+async function runCliCommand (args = [], env = {}) {
+  let process;
+  const stdout = [];
+  const stderr = [];
+  const exitCode = await new Promise((resolve) => {
+    process = childProcess.fork(`${__dirname}/cli.js`, args, {
+      env,
+      stdio: [0, "pipe", "pipe", "ipc"],
+    });
+    process.stdout.on("data", (data) => stdout.push(data.toString()));
+    process.stderr.on("data", (data) => stderr.push(data.toString()));
+    process.on("close", (code) => resolve(code));
+  });
+  return {
+    exitCode,
+    stdout: stdout.join(''),
+    stderr: stderr.join(''),
+  };
+}
+
+
+test('[cli] render', async (t) => {
+  const { stdout } = await runCliCommand(["render"], { TEMPLATE: "data/enonce.md" });
+  t.snapshot(stdout);
 });
