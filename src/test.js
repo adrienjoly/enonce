@@ -1,4 +1,7 @@
 const test = require('ava');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
 const childProcess = require('child_process');
 
 const {
@@ -108,8 +111,24 @@ async function runCliCommand (args = [], env = {}) {
   };
 }
 
-
 test('[cli] render', async (t) => {
   const { stdout } = await runCliCommand(["render"], { TEMPLATE: "data/enonce.md" });
   t.snapshot(stdout);
+});
+
+test('[cli] render with variables from another template', async (t) => {
+  const templateWithVars = path.join(os.tmpdir(), 'template-with-variables.md');
+  const templateFromVars = path.join(os.tmpdir(), 'template-from-variables.md');
+  await Promise.all([
+    fs.promises.writeFile(templateWithVars, "${ this.myVars = { var1: 'hi!' } }"),
+    fs.promises.writeFile(templateFromVars, "${ this.myVars.var1 }"),
+  ]);
+  const { exitCode, stderr, stdout } = await runCliCommand(["render"], {
+    TEMPLATE: templateFromVars,
+    LOAD_VARS_FROM_TEMPLATE: templateWithVars,
+  });
+  if (exitCode !== 0 || /error/i.test(stderr)) {
+    t.fail(stderr || `exited with code: ${exitCode}`);
+  }
+  t.regex(stdout, /^hi!/);
 });
