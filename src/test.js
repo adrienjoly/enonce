@@ -1,4 +1,8 @@
 const test = require('ava');
+const os = require('os');
+const fs = require('fs');
+const path = require('path');
+const childProcess = require('child_process');
 
 const {
   getVariantValuesForStudent,
@@ -9,6 +13,8 @@ const {
   countVariantsFromTemplate,
   getTemplateVariablesForStudent,
 } = require('./index.js');
+
+const cli = require('./cli-commands.js');
 
 test('getVariantValuesForStudent', t => {
   t.deepEqual(getVariantValuesForStudent('abc', 123), []); // no variant
@@ -83,4 +89,46 @@ test('getTemplateVariablesForStudent returns variables defined in the template',
     getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 1),
     { myVars: { a: "c" } }
   );
+});
+
+async function runCliCommand (args = [], env = {}) {
+  let process;
+  const stdout = [];
+  const stderr = [];
+  const exitCode = await new Promise((resolve) => {
+    process = childProcess.fork(`${__dirname}/cli.js`, args, {
+      env,
+      stdio: [0, "pipe", "pipe", "ipc"],
+    });
+    process.stdout.on("data", (data) => stdout.push(data.toString()));
+    process.stderr.on("data", (data) => stderr.push(data.toString()));
+    process.on("close", (code) => resolve(code));
+  });
+  return {
+    exitCode,
+    stdout: stdout.join(''),
+    stderr: stderr.join(''),
+  };
+}
+
+test('[cli] render', async (t) => {
+  const { stdout } = await runCliCommand(["render"], { TEMPLATE: "data/enonce.md" });
+  t.snapshot(stdout);
+});
+
+test('[cli] render with variables from another template', async (t) => {
+  const templateWithVars = path.join(os.tmpdir(), 'template-with-variables.md');
+  const templateFromVars = path.join(os.tmpdir(), 'template-from-variables.md');
+  await Promise.all([
+    fs.promises.writeFile(templateWithVars, "${ this.myVars = { var1: 'hi!' } }"),
+    fs.promises.writeFile(templateFromVars, "${ this.myVars.var1 }"),
+  ]);
+  const { exitCode, stderr, stdout } = await runCliCommand(["render"], {
+    TEMPLATE: templateFromVars,
+    LOAD_VARS_FROM_TEMPLATE: templateWithVars,
+  });
+  if (exitCode !== 0 || /error/i.test(stderr)) {
+    t.fail(stderr || `exited with code: ${exitCode}`);
+  }
+  t.regex(stdout, /^hi!/);
 });

@@ -12,6 +12,7 @@
     "check": "node src/cli.js",
     "start": "npx http-server",
     "deploy": "surge --project . --domain $(cat .domain_name)",
+    "test:update": "ava --update-snapshots",
     "test": "ava"
   },
   "repository": {
