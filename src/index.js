@@ -43,7 +43,17 @@ function fillTemplateForStudent (template, studentId) {
     }
     return variantPicker(studentId)(variants);
   };
-  return render(variant, studentId);
+  return render.call(this, variant, studentId); // we pass `this` as execution context, so variables defined in the templates can be retrieved by the caller, e.g. getTemplateVariablesForStudent()
+}
+
+
+/**
+ * Returns the named variant values defined as a variable in the provided template, for the given studentId.
+ */
+function getTemplateVariablesForStudent (template, studentId) {
+  const variables = {};
+  fillTemplateForStudent.call(variables, template, studentId);
+  return variables;
 }
 
 /**
@@ -164,6 +174,7 @@ try {
     variantPicker,
     fillTemplateForStudent,
     getVariantValuesForStudent,
+    getTemplateVariablesForStudent,
     countVariantsFromTemplate,
   };
 } catch (err) {}
