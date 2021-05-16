@@ -72,3 +72,14 @@ test('countVariantsFromTemplate computes the number of combinations of variants'
   t.is(countVariantsFromTemplate('- ${ a = variant(["hello","hi","hey"]) } ${ a }'), 3); // tolerate variables
   t.is(countVariantsFromTemplate('- ${variant(["hello","hi","hey"])}${variant([";",","])} ${variant(["world","all"])} -'), 6);
 });
+
+test('getTemplateVariablesForStudent returns variables defined in the template', t => {
+  t.deepEqual(
+    getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 0),
+    { myVars: { a: "b" } }
+  );
+  t.deepEqual(
+    getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 1),
+    { myVars: { a: "c" } }
+  );
+});
