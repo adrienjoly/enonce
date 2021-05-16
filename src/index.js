@@ -35,7 +35,7 @@ const variantPicker = (studentId) => (variants) => variants[getStudentVariant(st
  */
 function fillTemplateForStudent (template, studentId) {
   // render() renders the template, given the studentId and variant() function.
-  const render = eval(`(variant, studentId) => \`${template.replace(/`/g, "\\`")}\``);
+  const render = new Function('variant', 'studentId', `return \`${template.replace(/`/g, "\\`")}\``);
   // variant() returns the value of a variant placeholder, for a particular student
   const variant = (variants) => { 
     if (!Array.isArray(variants)) {
@@ -51,7 +51,7 @@ function fillTemplateForStudent (template, studentId) {
  */
 function getVariantValuesForStudent (template, studentId) {
   // renderTemplate() renders the template by running its `${variant()}` placeholders, given the studentId and variant() function.
-  const renderTemplate = eval(`(variant, studentId) => \`${template.replace(/`/g, "\\`")}\``);
+  const renderTemplate = new Function('variant', 'studentId', `return \`${template.replace(/`/g, "\\`")}\``);
   const variantValues = [];
   // variantAccumulator() accumulates values of each variant placeholder
   const variantAccumulator = (variants) => {
@@ -98,7 +98,7 @@ function countVariantsFromTemplate (template) {
       .map(match => `[${match[1]}]`)
       .map(variantsStr => {
         try {
-          return eval(variantsStr)
+          return eval(variantsStr) // will call variant(), TODO: avoid the use of eval()
         } catch (err) {
           console.error(err)
           console.error("code:", variantsStr);
