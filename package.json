@@ -1,6 +1,6 @@
 {
   "name": "enonce",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "author": "Adrien Joly",
   "description": "Application Web de rendu d'énoncé avec variantes, pour évaluer les étudiant·e·s de manière individuelle.",
   "license": "ISC",
