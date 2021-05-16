@@ -6,7 +6,8 @@ const {
   variantPicker,
   hashCode,
   normalizeEmail,
-  countVariantsFromTemplate
+  countVariantsFromTemplate,
+  getTemplateVariablesForStudent,
 } = require('./index.js');
 
 test('getVariantValuesForStudent', t => {
@@ -24,6 +25,20 @@ test('fillTemplateForStudent', t => {
   t.is(fillTemplateForStudent('abc_${variant(["even", "odd"])}', 124), 'abc_even');
   t.throws(() => fillTemplateForStudent('abc_${variant("not", "array")}', 124), { message: 'parameter of variant() should be an array, got: string' });
 });
+
+test('fillTemplateForStudent supports variables', t => {
+  // variable definition in a HTML comment element
+  t.regex(
+    fillTemplateForStudent('<!--${ this.myVars = { a: variant(["val"]) } }-->${ this.myVars.a }', 1),
+    /val$/
+  );
+  // variable definition and reference in same placeholder
+  t.is(
+    fillTemplateForStudent('${ this.myVars = { a: variant(["val"]) }, this.myVars.a }', 1),
+    "val"
+  );
+});
+
 
 test('variantPicker returns the right variant based on studentId', t => {
   t.is(variantPicker(1230)(['variant0', 'variant1', 'variant2']), 'variant0');
@@ -57,4 +72,15 @@ test('countVariantsFromTemplate computes the number of combinations of variants'
   t.is(countVariantsFromTemplate('- ${ variant(["hello","hi","hey"]) }'), 3); // tolerate spaces
   t.is(countVariantsFromTemplate('- ${ a = variant(["hello","hi","hey"]) } ${ a }'), 3); // tolerate variables
   t.is(countVariantsFromTemplate('- ${variant(["hello","hi","hey"])}${variant([";",","])} ${variant(["world","all"])} -'), 6);
+});
+
+test('getTemplateVariablesForStudent returns variables defined in the template', t => {
+  t.deepEqual(
+    getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 0),
+    { myVars: { a: "b" } }
+  );
+  t.deepEqual(
+    getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 1),
+    { myVars: { a: "c" } }
+  );
 });
