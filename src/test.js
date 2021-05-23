@@ -115,13 +115,12 @@ test('getTemplateVariables returns variables defined in the template', t => {
 });
 
 test('prependVariables prepends variables from another template', t => {
-  enonceTemplate = '${ this.variantVar = { someKey: variant(["a", "b"]) } }';
+  enonceTemplate = '${ this.variantVar = { someKey: variant(["valA", "valB"]) } }';
   solutionTemplate = 'Value of variantVar.someKey: ${ this.variantVar.someKey }.';
   variablesFromEnonce = getTemplateVariables(enonceTemplate);
   finalTemplate = prependVariables(solutionTemplate, variablesFromEnonce);
-  console.warn(finalTemplate);
   t.is(
-    finalTemplate.includes("variantVar: variant({ someKey: [ 'a', 'b' ] }),"),
+    finalTemplate.includes("someKey: variant([ 'valA', 'valB' ]),"),
     true
   );
   t.is(
@@ -129,14 +128,14 @@ test('prependVariables prepends variables from another template', t => {
     true
   );
   console.warn(fillTemplateForStudent(finalTemplate, 0));
-  // t.regex(
-  //   fillTemplateForStudent(finalTemplate, 0),
-  //   /Value of variantVar\.someKey: valA/
-  // );
-  // t.regex(
-  //   fillTemplateForStudent(finalTemplate, 1),
-  //   /Value of variantVar\.someKey: valB/
-  // );
+  t.regex(
+    fillTemplateForStudent(finalTemplate, 0),
+    /Value of variantVar\.someKey: valA/
+  );
+  t.regex(
+    fillTemplateForStudent(finalTemplate, 1),
+    /Value of variantVar\.someKey: valB/
+  );
 });
 
 async function runCliCommand (args = [], env = {}) {

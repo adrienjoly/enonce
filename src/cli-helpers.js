@@ -7,7 +7,7 @@ const util = require("util");
   return [
    '<!-- prepended variables: ${ Object.assign(this, {',
       ...Object.entries(variables).map(
-        ([variableKey, variableVal]) => `  ${variableKey}: variant(${util.inspect(variableVal)}),` // serialize the javascript object, assuming that variableVal is an array of variant values
+        ([variableKey, variableVal]) => `  ${variableKey}: {\n${ Object.entries(variableVal).map(([propKey, propVal]) => `    ${propKey}: variant(${util.inspect(propVal)}), `).join('\n')}\n  },` // serialize the javascript object, assuming that variableVal is an object in which each prop is an array of variant values
       ),
    '}) } -->',
    template,
