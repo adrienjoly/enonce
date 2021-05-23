@@ -74,18 +74,6 @@ function getTemplateVariables (template) {
 }
 
 /**
- * Return a copy of the template (e.g. a solution file), prepended with variant variables. (e.g. extracted by getTemplateVariables() from enonce.md)
- */
- function prependVariables (template, variables) {
-   return [
-    '<!-- prepended variables: ${ Object.assign(this, ',
-      JSON.stringify(variables), // serialize the javascript object
-    ') } -->',
-    template,
-   ].join('\n');
- }
-
-/**
  * Returns the value for each variant placeholder found in the provided template, for the given studentId.
  */
 function getVariantValuesForStudent (template, studentId) {
@@ -205,7 +193,6 @@ try {
     getVariantValuesForStudent,
     getTemplateVariablesForStudent,
     getTemplateVariables,
-    prependVariables,
     countVariantsFromTemplate,
   };
 } catch (err) {}

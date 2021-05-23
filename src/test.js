@@ -13,8 +13,9 @@ const {
   countVariantsFromTemplate,
   getTemplateVariablesForStudent,
   getTemplateVariables,
-  prependVariables,
 } = require('./index.js');
+
+const { prependVariables } = require('./cli-helpers.js');
 
 const cli = require('./cli-commands.js');
 
@@ -118,17 +119,16 @@ test('prependVariables prepends variables from another template', t => {
   solutionTemplate = 'Value of variantVar.someKey: ${ this.variantVar.someKey }.';
   variablesFromEnonce = getTemplateVariables(enonceTemplate);
   finalTemplate = prependVariables(solutionTemplate, variablesFromEnonce);
-  // console.warn(finalTemplate);
+  console.warn(finalTemplate);
   t.is(
-    finalTemplate.includes('{"variantVar":{"someKey":["a","b"]}}'),
-    // finalTemplate.includes('{"variantVar":{"someKey":variant(["a","b"])}}'), // TODO
+    finalTemplate.includes("variantVar: variant({ someKey: [ 'a', 'b' ] }),"),
     true
   );
   t.is(
     finalTemplate.includes(solutionTemplate),
     true
   );
-  // console.warn(fillTemplateForStudent(finalTemplate, 0));
+  console.warn(fillTemplateForStudent(finalTemplate, 0));
   // t.regex(
   //   fillTemplateForStudent(finalTemplate, 0),
   //   /Value of variantVar\.someKey: valA/
