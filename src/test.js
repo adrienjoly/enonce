@@ -44,6 +44,11 @@ test('fillTemplateForStudent supports variables', t => {
     fillTemplateForStudent('${ this.myVars = { a: variant(["val"]) }, this.myVars.a }', 1),
     "val"
   );
+  // variable definition with Object.assign()
+  t.is(
+    fillTemplateForStudent('${ Object.assign(this, { myVars: { a: variant(["val"]) } }), this.myVars.a }', 1),
+    "val"
+  );
 });
 
 
@@ -90,11 +95,19 @@ test('getTemplateVariablesForStudent returns variables defined in the template',
     getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 1),
     { myVars: { a: "c" } }
   );
+  t.deepEqual(
+    getTemplateVariablesForStudent('${ Object.assign(this, { myVars: { a: variant(["b", "c"]) } }) }', 1),
+    { myVars: { a: "c" } }
+  );
 });
 
 test('getTemplateVariables returns variables defined in the template', t => {
   t.deepEqual(
     getTemplateVariables('${ this.myVars = { a: variant(["b", "c"]) } }'),
+    { myVars: { a: ["b", "c"] } }
+  );
+  t.deepEqual(
+    getTemplateVariables('${ Object.assign(this, { myVars: { a: variant(["b", "c"]) } }) }'),
     { myVars: { a: ["b", "c"] } }
   );
 });
