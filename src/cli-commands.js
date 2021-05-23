@@ -109,8 +109,8 @@ module.exports = {
     if (!process.env.TEMPLATE) {
       throw new Error("Missing environment variable: TEMPLATE");
     }
-    const localDir = `${__dirname}/../`; // because the file is in the "src" subdir of the "enonce" project
-    fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}`, `${localDir}/${DEFAULT_TEMPLATE}.bak`);
+    const localDir = `${__dirname}/../`; // because this file is in the "src" subdir of the "enonce" project, and we want to deploy from the root dir
+    fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}`, `${localDir}/${DEFAULT_TEMPLATE}.bak`); // we backup the sample enonce.md file provided in this project, so it can safely be replaced by the one provided process.env.TEMPLATE
 
     function exitHandler() {
       try {
@@ -125,7 +125,7 @@ module.exports = {
     process.on('SIGUSR2', exitHandler);           // "
     process.on('uncaughtException', exitHandler); // catches uncaught exceptions
 
-    fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${localDir}/${DEFAULT_TEMPLATE}`);
+    fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${localDir}/${DEFAULT_TEMPLATE}`); // we temporally store the provided file as "enonce.md"
     const deploy = surge({ default: "publish" });
     const domain = process.env.SURGE_DOMAIN;
     deploy([ "--project", localDir, ...(domain ? [ "--domain", domain ] : []) ]);

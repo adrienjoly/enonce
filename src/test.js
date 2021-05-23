@@ -12,6 +12,7 @@ const {
   normalizeEmail,
   countVariantsFromTemplate,
   getTemplateVariablesForStudent,
+  getTemplateVariables,
 } = require('./index.js');
 
 const cli = require('./cli-commands.js');
@@ -88,6 +89,13 @@ test('getTemplateVariablesForStudent returns variables defined in the template',
   t.deepEqual(
     getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 1),
     { myVars: { a: "c" } }
+  );
+});
+
+test('getTemplateVariables returns variables defined in the template', t => {
+  t.deepEqual(
+    getTemplateVariables('${ this.myVars = { a: variant(["b", "c"]) } }'),
+    { myVars: { a: ["b", "c"] } }
   );
 });
 
