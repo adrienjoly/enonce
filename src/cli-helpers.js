@@ -7,15 +7,19 @@ const util = require("util");
 function prependVariables (template, variables) {
   const renderVariantProp = (propKey, propVal) => {
     assert(Array.isArray(propVal));
-    return `    ${propKey}: variant(${util.inspect(propVal)}), `;
+    return `${propKey}: variant(${util.inspect(propVal)})`;
   };
   const renderVariantProps = (variantProps) => {
     assert(typeof variantProps === "object" && !Array.isArray(variantProps));
-    return Object.entries(variantProps).map(([propKey, propVal]) => renderVariantProp(propKey, propVal)).join('\n')
+    return Object.entries(variantProps).map(([propKey, propVal]) => renderVariantProp(propKey, propVal))
   };
   const renderVariantVariable = (variableKey, variableVal) => {
     assert(typeof variableVal === "object" && !Array.isArray(variableVal));
-    return `  ${variableKey}: {\n${renderVariantProps(variableVal)}\n  },`;
+    return [
+      `  ${variableKey}: {`,
+      ...renderVariantProps(variableVal).map(line => `    ${line},`),
+      `  },`,
+    ].join('\n');
   };
   return [
    '<!-- prepended variables: ${ Object.assign(this, {',
