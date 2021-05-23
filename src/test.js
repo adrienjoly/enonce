@@ -119,6 +119,7 @@ test('prependVariables prepends variables from another template', t => {
   solutionTemplate = 'Value of variantVar.someKey: ${ this.variantVar.someKey }.';
   variablesFromEnonce = getTemplateVariables(enonceTemplate);
   finalTemplate = prependVariables(solutionTemplate, variablesFromEnonce);
+  console.warn(finalTemplate);
   t.is(
     finalTemplate.includes("someKey: variant([ 'valA', 'valB' ]),"),
     true
