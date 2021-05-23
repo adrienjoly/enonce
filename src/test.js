@@ -13,6 +13,7 @@ const {
   countVariantsFromTemplate,
   getTemplateVariablesForStudent,
   getTemplateVariables,
+  prependVariables,
 } = require('./index.js');
 
 const cli = require('./cli-commands.js');
@@ -110,6 +111,32 @@ test('getTemplateVariables returns variables defined in the template', t => {
     getTemplateVariables('${ Object.assign(this, { myVars: { a: variant(["b", "c"]) } }) }'),
     { myVars: { a: ["b", "c"] } }
   );
+});
+
+test('prependVariables prepends variables from another template', t => {
+  enonceTemplate = '${ this.variantVar = { someKey: variant(["a", "b"]) } }';
+  solutionTemplate = 'Value of variantVar.someKey: ${ this.variantVar.someKey }.';
+  variablesFromEnonce = getTemplateVariables(enonceTemplate);
+  finalTemplate = prependVariables(solutionTemplate, variablesFromEnonce);
+  // console.warn(finalTemplate);
+  t.is(
+    finalTemplate.includes('{"variantVar":{"someKey":["a","b"]}}'),
+    // finalTemplate.includes('{"variantVar":{"someKey":variant(["a","b"])}}'), // TODO
+    true
+  );
+  t.is(
+    finalTemplate.includes(solutionTemplate),
+    true
+  );
+  // console.warn(fillTemplateForStudent(finalTemplate, 0));
+  // t.regex(
+  //   fillTemplateForStudent(finalTemplate, 0),
+  //   /Value of variantVar\.someKey: valA/
+  // );
+  // t.regex(
+  //   fillTemplateForStudent(finalTemplate, 1),
+  //   /Value of variantVar\.someKey: valB/
+  // );
 });
 
 async function runCliCommand (args = [], env = {}) {
