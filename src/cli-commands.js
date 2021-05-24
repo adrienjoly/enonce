@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 const surge = require("surge");
 const {
   countVariantsFromTemplate,
@@ -7,8 +8,11 @@ const {
   getStudentVariant,
   normalizeEmail,
   hashCode,
+  getTemplateVariables,
   getTemplateVariablesForStudent,
 } = require("./index.js");
+
+const { prependVariables } = require('./cli-helpers.js');
 
 const DEFAULT_TEMPLATE = "data/enonce.md";
 
@@ -109,25 +113,36 @@ module.exports = {
     if (!process.env.TEMPLATE) {
       throw new Error("Missing environment variable: TEMPLATE");
     }
-    const localDir = `${__dirname}/../`; // because the file is in the "src" subdir of the "enonce" project
-    fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}`, `${localDir}/${DEFAULT_TEMPLATE}.bak`);
-
+    const domain = process.env.SURGE_DOMAIN;
+    const localDir = path.normalize(`${__dirname}/../`); // because we deploy from the root dir of this project
+    const targetTemplateFile = path.join(localDir, DEFAULT_TEMPLATE);
+    const providedTemplateFile = path.join(process.cwd(), process.env.TEMPLATE); // make absolute path from which the CLI was run
+    const template = await fs.promises.readFile(providedTemplateFile, "utf8");
+    // we can load variables from another template (e.g. to deploy a solution.md file that re-uses the variants from enonce.md)
+    const externalVariables = await (async () => {
+      const { LOAD_VARS_FROM_TEMPLATE } = process.env;
+      return LOAD_VARS_FROM_TEMPLATE
+        ? getTemplateVariables(await loadTemplate(path.join(process.cwd(), LOAD_VARS_FROM_TEMPLATE)))
+        : null
+    })();
+    // backup the target file to deploy (data/enonce.md) beforce temporarily replacing it with the final template file
+    fs.copyFileSync(targetTemplateFile, `${targetTemplateFile}.bak`); // we backup the sample enonce.md file provided in this project, so it can safely be replaced by the one provided process.env.TEMPLATE
     function exitHandler() {
       try {
         // if running the cli thru npx, the files may have been removed already => restore is unnecessary and will fail
-        fs.renameSync(`${localDir}/${DEFAULT_TEMPLATE}.bak`, `${localDir}/${DEFAULT_TEMPLATE}`);
+        fs.renameSync(`${targetTemplateFile}.bak`, targetTemplateFile);
       } finally {}
     }
-    
     process.on('exit', exitHandler);              // when app is closing
     process.on('SIGINT', exitHandler);            // ctrl+c event
     process.on('SIGUSR1', exitHandler);           // catches "kill pid" (for example: nodemon restart)
     process.on('SIGUSR2', exitHandler);           // "
     process.on('uncaughtException', exitHandler); // catches uncaught exceptions
-
-    fs.copyFileSync(process.cwd() + "/" + process.env.TEMPLATE, `${localDir}/${DEFAULT_TEMPLATE}`);
+    // copy or generate the template file to be deployed
+    const finalTemplate = externalVariables ? prependVariables(template, externalVariables) : template;
+    await fs.promises.writeFile(targetTemplateFile, finalTemplate, "utf8"); // we temporally store the resulting file as "enonce.md"
+    // deploy
     const deploy = surge({ default: "publish" });
-    const domain = process.env.SURGE_DOMAIN;
     deploy([ "--project", localDir, ...(domain ? [ "--domain", domain ] : []) ]);
     // Note: when deploy ends, exitHandler() will be called to restore the default enonce.md file
   },

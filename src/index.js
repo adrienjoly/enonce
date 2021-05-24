@@ -46,13 +46,30 @@ function fillTemplateForStudent (template, studentId) {
   return render.call(this, variant, studentId); // we pass `this` as execution context, so variables defined in the templates can be retrieved by the caller, e.g. getTemplateVariablesForStudent()
 }
 
-
 /**
  * Returns the named variant values defined as a variable in the provided template, for the given studentId.
  */
 function getTemplateVariablesForStudent (template, studentId) {
   const variables = {};
   fillTemplateForStudent.call(variables, template, studentId);
+  return variables;
+}
+
+/**
+ * Extract and return variables, with every possible variant value for each placeholder.
+ */
+function getTemplateVariables (template) {
+  const variables = {};
+  // render() renders the template, given the studentId and variant() function.
+  const renderTemplate = new Function('variant', `return \`${template.replace(/`/g, "\\`")}\``);
+  // variant() will be called several times (e.g. for each value placeholder) when rendering the template
+  const variantHandler = (variantValues) => { 
+    if (!Array.isArray(variantValues)) {
+      throw new Error(`parameter of variant() should be an array, got: ${typeof variants}`);
+    }
+    return variantValues;
+  };
+  renderTemplate.call(variables, variantHandler); // will populate `variables`
   return variables;
 }
 
@@ -175,6 +192,7 @@ try {
     fillTemplateForStudent,
     getVariantValuesForStudent,
     getTemplateVariablesForStudent,
+    getTemplateVariables,
     countVariantsFromTemplate,
   };
 } catch (err) {}

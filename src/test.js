@@ -12,7 +12,10 @@ const {
   normalizeEmail,
   countVariantsFromTemplate,
   getTemplateVariablesForStudent,
+  getTemplateVariables,
 } = require('./index.js');
+
+const { prependVariables } = require('./cli-helpers.js');
 
 const cli = require('./cli-commands.js');
 
@@ -41,6 +44,11 @@ test('fillTemplateForStudent supports variables', t => {
   // variable definition and reference in same placeholder
   t.is(
     fillTemplateForStudent('${ this.myVars = { a: variant(["val"]) }, this.myVars.a }', 1),
+    "val"
+  );
+  // variable definition with Object.assign()
+  t.is(
+    fillTemplateForStudent('${ Object.assign(this, { myVars: { a: variant(["val"]) } }), this.myVars.a }', 1),
     "val"
   );
 });
@@ -88,6 +96,46 @@ test('getTemplateVariablesForStudent returns variables defined in the template',
   t.deepEqual(
     getTemplateVariablesForStudent('${ this.myVars = { a: variant(["b", "c"]) } }', 1),
     { myVars: { a: "c" } }
+  );
+  t.deepEqual(
+    getTemplateVariablesForStudent('${ Object.assign(this, { myVars: { a: variant(["b", "c"]) } }) }', 1),
+    { myVars: { a: "c" } }
+  );
+});
+
+test('getTemplateVariables returns variables defined in the template', t => {
+  t.deepEqual(
+    getTemplateVariables('${ this.myVars = { a: variant(["b", "c"]) } }'),
+    { myVars: { a: ["b", "c"] } }
+  );
+  t.deepEqual(
+    getTemplateVariables('${ Object.assign(this, { myVars: { a: variant(["b", "c"]) } }) }'),
+    { myVars: { a: ["b", "c"] } }
+  );
+});
+
+test('prependVariables prepends variables from another template', t => {
+  enonceTemplate = '${ this.variantVar = { someKey: variant(["valA", "valB"]) } }';
+  solutionTemplate = 'Value of variantVar.someKey: ${ this.variantVar.someKey }.';
+  variablesFromEnonce = getTemplateVariables(enonceTemplate);
+  finalTemplate = prependVariables(solutionTemplate, variablesFromEnonce);
+  console.warn(finalTemplate);
+  t.is(
+    finalTemplate.includes("someKey: variant([ 'valA', 'valB' ]),"),
+    true
+  );
+  t.is(
+    finalTemplate.includes(solutionTemplate),
+    true
+  );
+  console.warn(fillTemplateForStudent(finalTemplate, 0));
+  t.regex(
+    fillTemplateForStudent(finalTemplate, 0),
+    /Value of variantVar\.someKey: valA/
+  );
+  t.regex(
+    fillTemplateForStudent(finalTemplate, 1),
+    /Value of variantVar\.someKey: valB/
   );
 });
 
